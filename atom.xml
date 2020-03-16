@@ -195,9 +195,9 @@
     <link href="https://www.kyralo.online/2020/01/25/2020-%E6%96%B0%E5%B9%B4%E7%AC%AC%E4%B8%80%E5%88%BB/"/>
     <id>https://www.kyralo.online/2020/01/25/2020-新年第一刻/</id>
     <published>2020-01-24T16:00:00.000Z</published>
-    <updated>2020-03-16T03:11:29.406Z</updated>
+    <updated>2020-03-16T13:04:15.083Z</updated>
     
-    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><!--     <iframe      style="margin: auto;"      frameborder="no" border="0"      width=130% height=310      src="//music.163.com/outchain/player?type=0&id=2725346449&auto=0&height=430">    </iframe> --><div id="dplayer0" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px; width:150%;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer0"),"theme":"#FADFA3","loop":true,"video":{"url":"https://api.dogecloud.com/player/get.mp4?vcode=5ac682e6f8231991&userId=17&ext=.mp4","pic":"http://cdn.kyralo.online/blog-18.jpg"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script><div class="new_year_2020"></div>]]></content>
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><!--     <iframe      style="margin: auto;"      frameborder="no" border="0"      width=130% height=310      src="//music.163.com/outchain/player?type=0&id=2725346449&auto=0&height=430">    </iframe> --><div id="dplayer0" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px; width:100%;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer0"),"theme":"#FADFA3","video":{"url":"https://api.dogecloud.com/player/get.mp4?vcode=5ac682e6f8231991&userId=17&ext=.mp4","pic":"http://cdn.kyralo.online/blog-18.jpg"}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script><div class="new_year_2020"></div>]]></content>
     
     <summary type="html">
     
