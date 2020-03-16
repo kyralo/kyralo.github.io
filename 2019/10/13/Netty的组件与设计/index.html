@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Netty的组件与设计 - kyralo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="kyralo,"> 
+    <meta name="description" content="Channel,EventLoop,ChannelFuture
+Channel —– Socket;
+EventLoop —– 控制流,多线程,并发;
+ChannelFuture —– 异步通知;
+,"> 
+    <meta name="author" content="kyralo"> 
+    
+    <link rel="icon" href="/img/favicon.ico"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+    <!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <!-- <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script> -->
+</head>
+</html>
+<body class="loading">
+    <span id="config-title" style="display:none">kyralo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://www.kyralo.online"></a>
+    <!-- <div title="播放/暂停" class="icon-play"></div> -->
+    <h3 class="subtitle">Netty的组件与设计</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Netty的组件与设计</h1>
+        <div class="stuff">
+            <span>十月 13, 2019</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/Java/">Java</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/Netty/">Netty</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h3 id="Channel-EventLoop-ChannelFuture"><a href="#Channel-EventLoop-ChannelFuture" class="headerlink" title="Channel,EventLoop,ChannelFuture"></a>Channel,EventLoop,ChannelFuture</h3><ul>
+<li>Channel —– Socket;</li>
+<li>EventLoop —– 控制流,多线程,并发;</li>
+<li>ChannelFuture —– 异步通知;</li>
+</ul>
+<h4 id="Channel-接口"><a href="#Channel-接口" class="headerlink" title="Channel 接口"></a>Channel 接口</h4><pre><code>基本的 I/O 操作（bind()、connect()、read()和write()）依赖于底层网
+络传输所提供的原语。在基于 Java 的网络编程中，其基本的构造是 class Socket.
+Netty 的 Channel 接口所提供的 API，大大地降低了直接使用 Socket 类的复杂性.</code></pre><p>Channel 拥有许多预定义的、专门化实现的广泛类层次结构的根:</p>
+<ul>
+<li>EmbeddedChann</li>
+<li>LocalServerChannel</li>
+<li>NioDatagramChannel</li>
+<li>NioSctpChannel</li>
+<li>NioSocketChannel</li>
+</ul>
+<h4 id="EventLoop-接口"><a href="#EventLoop-接口" class="headerlink" title="EventLoop 接口"></a>EventLoop 接口</h4><pre><code>EventLoop 定义了 Netty 的核心抽象，用于处理连接的生命周期中所发生的事件。</code></pre><h5 id="Channel、EventLoop、Thread-以及-EventLoopGroup-之间的关系"><a href="#Channel、EventLoop、Thread-以及-EventLoopGroup-之间的关系" class="headerlink" title="Channel、EventLoop、Thread 以及 EventLoopGroup 之间的关系:"></a>Channel、EventLoop、Thread 以及 EventLoopGroup 之间的关系:</h5><p><img src="https://view.moezx.cc/images/2019/10/13/netty.png" alt></p>
+<p>#####关系</p>
+<ul>
+<li>一个 EventLoopGroup 包含一个或者多个 EventLoop</li>
+<li>一个 EventLoop 在它的生命周期内只和一个 Thread 绑定</li>
+<li>所有由 EventLoop 处理的 I/O 事件都将在它专有的 Thread 上被处理</li>
+<li>一个 Channel 在它的生命周期内只注册于一个 EventLoopGroup</li>
+<li>一个 EventLoop 可能会被分配给一个或多个 Channel</li>
+</ul>
+<p style="color: red">注意:在这种设计中，一个给定 Channel 的 I/O 操作都是由相同的 Thread 执行的，实际上消除了对于同步的需要。</p>
+
+<h4 id="ChannelFuture-接口"><a href="#ChannelFuture-接口" class="headerlink" title="ChannelFuture 接口"></a>ChannelFuture 接口</h4><pre><code>Netty 中所有的 I/O 操作都是异步的,因为一个操作可能不会立即返回，
+所以我们需要一种用于在之后的某个时间点确定其结果的方法。为此，Netty
+提供了ChannelFuture接口，addListener()方法注册了一个ChannelFutureListener，
+以便在某个操作完成时（无论是否成功）得到通知。
+
+可以将 ChannelFuture 看作是将来要执行的操作的结果的占位符。它究竟什么时候被执行则
+可能取决于若干的因素，因此不可能准确地预测，但是可以肯定的是它将会被执行。此外，所有
+属于同一个 Channel 的操作都被保证其将以它们被调用的顺序被执行.</code></pre><h3 id="ChannelHandler-和-ChannelPipeline"><a href="#ChannelHandler-和-ChannelPipeline" class="headerlink" title="ChannelHandler 和 ChannelPipeline"></a>ChannelHandler 和 ChannelPipeline</h3><p>些管理数据流以及执行应用程序处理逻辑的组件</p>
+<h4 id="ChannelHandler-接口"><a href="#ChannelHandler-接口" class="headerlink" title="ChannelHandler 接口"></a>ChannelHandler 接口</h4><pre><code>Netty 的主要组件是 ChannelHandler，它充当了所有处理入站和出站数据的应用程序逻辑的
+容器.事实上，ChannelHandler 可专门用于几乎任何类型的动作，例如将数据从一种格式转换
+为另外一种格式，或者处理转换过程中所抛出的异常.</code></pre><p>eg:<br>    ChannelInboundHandler 是一个你将会经常实现的子接口。这种类型的ChannelHandler<br>    接收入站事件和数据，这些数据随后将会被你的应用程序的业务逻辑所处理。当你要给连接的客户<br>    端发送响应时，也可以从ChannelInboundHandler冲刷数据。你的应用程序的业务逻辑通常驻<br>    留在一个或者多个 ChannelInboundHandler中.</p>
+<h4 id="ChannelPipeline-接口"><a href="#ChannelPipeline-接口" class="headerlink" title="ChannelPipeline 接口"></a>ChannelPipeline 接口</h4><pre><code>ChannelPipeline 提供了 ChannelHandler 链的容器，并定义了用于在该链上传播入站</code></pre><p>和出站事件流的 API。当 Channel 被创建时，它会被自动地分配到它专属的 ChannelPipeline。</p>
+<p>ChannelHandler 安装到 ChannelPipeline 中的过程如下所示：</p>
+<ul>
+<li>一个ChannelInitializer的实现被注册到了ServerBootstrap中</li>
+<li>当 ChannelInitializer.initChannel()方法被调用时，ChannelInitializer将在 ChannelPipeline 中安装一组自定义的 ChannelHandler</li>
+<li>ChannelInitializer 将它自己从 ChannelPipeline 中移除</li>
+</ul>
+<h5 id="ChannelPipeline-和-ChannelHandler-之间的共生关系"><a href="#ChannelPipeline-和-ChannelHandler-之间的共生关系" class="headerlink" title="ChannelPipeline 和 ChannelHandler 之间的共生关系"></a>ChannelPipeline 和 ChannelHandler 之间的共生关系</h5><pre><code>ChannelHandler是专为支持广泛的用途而设计的,可以将它看作是处理往来
+ChannelPipeline 事件（包括数据）的任何代码的通用容器。
+
+ChannelInboundHandler 和 ChannelOutboundHandler 接口是由
+ChannelHandler 派生的
+
+使得事件流经 ChannelPipeline 是 ChannelHandler 的工作，它们是在应用程序的
+初始化或者引导阶段被安装的。这些对象接收事件、执行它们所实现的处理逻辑，并将数据
+传递给链中的下一个ChannelHandler。它们的执行顺序是由它们被添加的顺序所决定的。
+实际上，被我们称为 ChannelPipeline 的是这些 ChannelHandler 的编排顺序.</code></pre><p>一个 Netty 应用程序中入站和出站数据流之间的区别:<br><img src="https://view.moezx.cc/images/2019/10/13/Netty.png" alt></p>
+<pre><code>入站和出站 ChannelHandler 可以被安装到同一个ChannelPipeline中。如果一个消息
+或者任何其他的入站事件被读取，那么它会从ChannelPipeline的头部开始流动，并被传递
+给第一个ChannelInboundHandler.这个 ChannelHandler不一定会实际地修改数据，具
+体取决于它的具体功能,在这之后，数据将会被传递给链中的下一个ChannelInboundHandler.
+最终,数据将会到达ChannelPipeline 的尾端，届时，所有处理就都结束了.数据的出站运动
+（即正在被写的数据）在概念上也是一样的.在这种情况下，数据将从ChannelOutboundHandler
+链的尾端开始流动，直到它到达链的头部为止.在这之后，出站数据将会到达网络传输层，这里
+显示为Socket.通常情况下，这将触发一个写操作.</code></pre><p>入站和出站 ChannelHandler 的更多讨论:</p>
+<pre><code>通过使用作为参数传递到每个方法的 ChannelHandlerContext，事件可以被传递给当前
+ChannelHandler链中的下一个ChannelHandler。因为你有时会忽略那些不感兴趣的事件,
+所以 Netty提供了抽象基类
+ChannelInboundHandlerAdapter和ChannelOutboundHandlerAdapter.
+通过调用ChannelHandlerContext上的对应方法，每个都提供了简单地将事件传递给下
+一个ChannelHandler的方法的实现。随后，你可以通过重写你所感兴趣的那些方法来扩展
+这些类.
+
+在 Netty 中，有两种发送消息的方式。你可以直接写到 Channel 中，也可以 写到和 
+ChannelHandler相关联的ChannelHandlerContext对象中。前一种方式将会导致消息
+从ChannelPipeline 的尾端开始流动，而后者将导致消息从 ChannelPipeline 中的下
+一个 ChannelHandler 开始流动.</code></pre>
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='false'
+        data-ci='eeec43124e53633945c0'
+        data-cs='e2332cffb30ae24f185c1701286958cddd748ffb'
+        data-r='kyralo.github.io'
+        data-o='kyralo'
+        data-a='kyralo'
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Channel-EventLoop-ChannelFuture"><span class="toc-number">1.</span> <span class="toc-text">Channel,EventLoop,ChannelFuture</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Channel-接口"><span class="toc-number">1.1.</span> <span class="toc-text">Channel 接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#EventLoop-接口"><span class="toc-number">1.2.</span> <span class="toc-text">EventLoop 接口</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Channel、EventLoop、Thread-以及-EventLoopGroup-之间的关系"><span class="toc-number">1.2.1.</span> <span class="toc-text">Channel、EventLoop、Thread 以及 EventLoopGroup 之间的关系:</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ChannelFuture-接口"><span class="toc-number">1.3.</span> <span class="toc-text">ChannelFuture 接口</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ChannelHandler-和-ChannelPipeline"><span class="toc-number">2.</span> <span class="toc-text">ChannelHandler 和 ChannelPipeline</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ChannelHandler-接口"><span class="toc-number">2.1.</span> <span class="toc-text">ChannelHandler 接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ChannelPipeline-接口"><span class="toc-number">2.2.</span> <span class="toc-text">ChannelPipeline 接口</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#ChannelPipeline-和-ChannelHandler-之间的共生关系"><span class="toc-number">2.2.1.</span> <span class="toc-text">ChannelPipeline 和 ChannelHandler 之间的共生关系</span></a></li></ol></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-146789315-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script>
+<style>
+  .aplayer .aplayer-lrc {
+    height: 35px;
+  }
+  .aplayer .aplayer-lrc p{
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 18px !important;
+  }
+  .aplayer .aplayer-lrc p.aplayer-lrc-current{
+    color: #FF1493;
+  }
+  .aplayer.aplayer-narrow .aplayer-body{
+    left: -66px !important;
+  }
+  .aplayer.aplayer-fixed .aplayer-lrc {
+    display: none;
+  }
+  .aplayer .aplayer-lrc.aplayer-lrc-hide {
+      display:none !important;
+  }
+  .aplayer.aplayer-fixed .lrc-show {
+    display: block;
+    background: rgba(255, 255, 255, 0.8);
+  }
+</style>
+<div class="aplayer"
+
+    data-id="2725346449"
+
+    data-server="netease"
+
+    data-type="playlist"
+
+    data-fixed="true"
+
+    data-autoplay="false"
+
+    data-loop="all"
+
+    data-order="random"
+
+    data-preload="auto"
+
+    data-volume="0.7"
+
+    data-mutex="true"
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script>
+<script>
+  $(function(){
+    $('body').on('click', '.aplayer', function(){
+      if($('.aplayer-button').hasClass('aplayer-play')) {
+        $('.aplayer-lrc').removeClass('lrc-show');
+      } else {
+        $('.aplayer-lrc').addClass('lrc-show');
+      }
+    })
+  });
+</script>
+</html>

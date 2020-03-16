@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Docker部署安装MongoDB - kyralo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="kyralo,"> 
+    <meta name="description" content="下载镜像docker pull registry.docker-cn.com/library/mongo创建本地数据文件夹mkdir /data/mongodb0启动MongoDB容器docker ,"> 
+    <meta name="author" content="kyralo"> 
+    
+    <link rel="icon" href="/img/favicon.ico"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+    <!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <!-- <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script> -->
+</head>
+</html>
+<body class="loading">
+    <span id="config-title" style="display:none">kyralo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://www.kyralo.online"></a>
+    <!-- <div title="播放/暂停" class="icon-play"></div> -->
+    <h3 class="subtitle">Docker部署安装MongoDB</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Docker部署安装MongoDB</h1>
+        <div class="stuff">
+            <span>八月 14, 2019</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/Docker/">Docker</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/MongoDB/">MongoDB</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/Web/">Web</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h3 id="下载镜像"><a href="#下载镜像" class="headerlink" title="下载镜像"></a>下载镜像</h3><pre><code>docker pull registry.docker-cn.com/library/mongo</code></pre><h3 id="创建本地数据文件夹"><a href="#创建本地数据文件夹" class="headerlink" title="创建本地数据文件夹"></a>创建本地数据文件夹</h3><pre><code>mkdir /data/mongodb0</code></pre><h3 id="启动MongoDB容器"><a href="#启动MongoDB容器" class="headerlink" title="启动MongoDB容器"></a>启动MongoDB容器</h3><pre><code>docker run --name mongodb-server0 -v /data/mongodb0:/data/db -p 27017:27017 -d 镜像ID(镜像名 mongo) --auth</code></pre><ul>
+<li>-v后面的参数表示把数据文件挂载到宿主机的路径</li>
+<li>-p把mongo端口映射到宿主机的指定端口</li>
+<li>–auth表示连接mongodb需要授权</li>
+</ul>
+<h3 id="为MongoDB添加管理员用户"><a href="#为MongoDB添加管理员用户" class="headerlink" title="为MongoDB添加管理员用户"></a>为MongoDB添加管理员用户</h3><h4 id="进入MongoDB控制台"><a href="#进入MongoDB控制台" class="headerlink" title="进入MongoDB控制台"></a>进入MongoDB控制台</h4><pre><code>docker exec -it some-mongo mongo admin</code></pre><h4 id="添加用户命令"><a href="#添加用户命令" class="headerlink" title="添加用户命令"></a>添加用户命令</h4><pre><code>db.createUser({ user: &apos;1iURI&apos;, pwd: &apos;rootroot&apos;, roles: [ { role: &quot;userAdminAnyDatabase&quot;, db: &quot;admin&quot; } ] });</code></pre><h4 id="MongoDB用户权限"><a href="#MongoDB用户权限" class="headerlink" title="MongoDB用户权限"></a>MongoDB用户权限</h4><h5 id="内建的角色"><a href="#内建的角色" class="headerlink" title="内建的角色"></a>内建的角色</h5><ul>
+<li>数据库用户角色：read、readWrite;</li>
+<li>数据库管理角色：dbAdmin、dbOwner、userAdmin；</li>
+<li>集群管理角色：clusterAdmin、clusterManager、clusterMonitor、hostManager；</li>
+<li>备份恢复角色：backup、restore；</li>
+<li>所有数据库角色：readAnyDatabase、readWriteAnyDatabase、userAdminAnyDatabase、dbAdminAnyDatabase</li>
+<li>超级用户角色：root // 这里还有几个角色间接或直接提供了系统超级用户的访问（dbOwner 、userAdmin、userAdminAnyDatabase）</li>
+</ul>
+<h5 id="内部角色：-system"><a href="#内部角色：-system" class="headerlink" title="内部角色：__system"></a>内部角色：__system</h5><p>角色说明：</p>
+<ul>
+<li>Read：允许用户读取指定数据库</li>
+<li>readWrite：允许用户读写指定数据库</li>
+<li>dbAdmin：允许用户在指定数据库中执行管理函数，如索引创建、删除，查看统计或访问system.profile</li>
+<li>userAdmin：允许用户向system.users集合写入，可以找指定数据库里创建、删除和管理用户</li>
+<li>clusterAdmin：只在admin数据库中可用，赋予用户所有分片和复制集相关函数的管理权限。</li>
+<li>readAnyDatabase：只在admin数据库中可用，赋予用户所有数据库的读权限</li>
+<li>readWriteAnyDatabase：只在admin数据库中可用，赋予用户所有数据库的读写权限</li>
+<li>userAdminAnyDatabase：只在admin数据库中可用，赋予用户所有数据库的userAdmin权限</li>
+<li>dbAdminAnyDatabase：只在admin数据库中可用，赋予用户所有数据库的dbAdmin权限。</li>
+<li>root：只在admin数据库中可用。超级账号，超级权限</li>
+</ul>
+<h3 id="副本集形式部署"><a href="#副本集形式部署" class="headerlink" title="副本集形式部署"></a>副本集形式部署</h3><p>如果你想单点连接，那么从这里往下不需要看了，如果你想搭建MongoDB副本集，那么请移除MongoDB的所有docker容器，重新按照下面的方式启动容器和设置</p>
+<ol start="0">
+<li>创建用于auth的keyfile<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">    mkdir -p /data/mongodb0_conf</span><br><span class="line">    cd /data/mongodb0_conf</span><br><span class="line">    openssl rand -base64 741 &gt; mongodb-keyfile</span><br><span class="line">    chmod 600 mongodb-keyfile</span><br><span class="line">    chown 999 mongodb_keyfile</span><br><span class="line"></span><br><span class="line">1. 启动三个mongodb进程</span><br><span class="line">    docker run --name mongodb-server0 \</span><br><span class="line">    --restart always \</span><br><span class="line">    -v /data/mongodb0:/data/db \</span><br><span class="line">    -v /data/mongodb0_conf:/opt/keyfile \</span><br><span class="line">    -p 27017:27017 \</span><br><span class="line">    -d d22 \</span><br><span class="line">    --smallfiles \</span><br><span class="line">    --keyFile /opt/keyfile/mongodb-keyfile \</span><br><span class="line">    --replSet exuehui-mongo-set</span><br><span class="line"></span><br><span class="line">    docker run --name mongodb-server1 \</span><br><span class="line">    --restart always \</span><br><span class="line">    -v /data/mongodb1:/data/db \</span><br><span class="line">    -v /data/mongodb1_conf:/opt/keyfile \</span><br><span class="line">    -p 27018:27017 \</span><br><span class="line">    -d d22 \</span><br><span class="line">    --smallfiles \</span><br><span class="line">    --keyFile /opt/keyfile/mongodb-keyfile \</span><br><span class="line">    --replSet exuehui-mongo-set</span><br><span class="line"></span><br><span class="line">    docker run --name mongodb-server0 \</span><br><span class="line">    --restart always \</span><br><span class="line">    -v /data/mongodb0:/data/db \</span><br><span class="line">    -v /data/mongodb0_conf:/opt/keyfile \</span><br><span class="line">    -p 37017:27017 \</span><br><span class="line">    -d d22 \</span><br><span class="line">    --smallfiles \</span><br><span class="line">    --keyFile /opt/keyfile/mongodb-keyfile \</span><br><span class="line">    --replSet exuehui-mongo-set</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>2 进入 mongodb docker<br>    docker run -it –name mongo-client mongo /bin/bash</p>
+<p>3 进入要作为master数据库的 mongodb shell<br>    mongo 192.168.31.206:27017/admin</p>
+<p>4 初始化副本集, _id和启动时设置的replSet参数相同<br>    rs.initiate({ _id:”exuehui-mongo-set”, members:[{_id:0,host:”home.lemonsoft.vip:27017”}, {_id:1,host:”home.lemonsoft.vip:27018”}, {_id:2,host:”home.lemonsoft.vip:37017”}<br>    ]})</p>
+<p>5 查看副本集状态<br>    rs.status()</p>
+<p>6.创建权限用户</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">use admin;</span><br><span class="line">db.createUser(&#123; user: '1iURI', pwd: 'rootroot', roles: [ &#123; role: "userAdminAnyDatabase", db: "admin" &#125; ] &#125;);</span><br><span class="line"></span><br><span class="line">use exuehui</span><br><span class="line">db.createUser(&#123; user: '1iURI-exuehui', pwd: 'rootroot', roles: [ &#123; role: "readWrite", db: "exuehui" &#125; ] &#125;);</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>重新运行容器，并添加–auth<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">docker run --name mongodb-server0 \</span><br><span class="line">--restart always \</span><br><span class="line">-v /data/mongodb0:/data/db \</span><br><span class="line">-v /data/mongodb0_conf:/opt/keyfile \</span><br><span class="line">-p 27017:27017 \</span><br><span class="line">-d d22 \</span><br><span class="line">--smallfiles \</span><br><span class="line">--keyFile /opt/keyfile/mongodb-keyfile \</span><br><span class="line">--auth \</span><br><span class="line">--replSet exuehui-mongo-set</span><br><span class="line"></span><br><span class="line">docker run --name mongodb-server1 \</span><br><span class="line">--restart always \</span><br><span class="line">-v /data/mongodb1:/data/db \</span><br><span class="line">-v /data/mongodb1_conf:/opt/keyfile \</span><br><span class="line">-p 27018:27017 \</span><br><span class="line">-d d22 \</span><br><span class="line">--smallfiles \</span><br><span class="line">--keyFile /opt/keyfile/mongodb-keyfile \</span><br><span class="line">--auth \</span><br><span class="line">--replSet exuehui-mongo-set</span><br><span class="line"></span><br><span class="line">docker run --name mongodb-server0 \</span><br><span class="line">--restart always \</span><br><span class="line">-v /data/mongodb0:/data/db \</span><br><span class="line">-v /data/mongodb0_conf:/opt/keyfile \</span><br><span class="line">-p 37017:27017 \</span><br><span class="line">-d d22 \</span><br><span class="line">--smallfiles \</span><br><span class="line">--keyFile /opt/keyfile/mongodb-keyfile \</span><br><span class="line">--auth \</span><br><span class="line">--replSet exuehui-mongo-set</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='false'
+        data-ci='eeec43124e53633945c0'
+        data-cs='e2332cffb30ae24f185c1701286958cddd748ffb'
+        data-r='kyralo.github.io'
+        data-o='kyralo'
+        data-a='kyralo'
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载镜像"><span class="toc-number">1.</span> <span class="toc-text">下载镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建本地数据文件夹"><span class="toc-number">2.</span> <span class="toc-text">创建本地数据文件夹</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启动MongoDB容器"><span class="toc-number">3.</span> <span class="toc-text">启动MongoDB容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#为MongoDB添加管理员用户"><span class="toc-number">4.</span> <span class="toc-text">为MongoDB添加管理员用户</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#进入MongoDB控制台"><span class="toc-number">4.1.</span> <span class="toc-text">进入MongoDB控制台</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#添加用户命令"><span class="toc-number">4.2.</span> <span class="toc-text">添加用户命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MongoDB用户权限"><span class="toc-number">4.3.</span> <span class="toc-text">MongoDB用户权限</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#内建的角色"><span class="toc-number">4.3.1.</span> <span class="toc-text">内建的角色</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#内部角色：-system"><span class="toc-number">4.3.2.</span> <span class="toc-text">内部角色：__system</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#副本集形式部署"><span class="toc-number">5.</span> <span class="toc-text">副本集形式部署</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-146789315-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script>
+<style>
+  .aplayer .aplayer-lrc {
+    height: 35px;
+  }
+  .aplayer .aplayer-lrc p{
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 18px !important;
+  }
+  .aplayer .aplayer-lrc p.aplayer-lrc-current{
+    color: #FF1493;
+  }
+  .aplayer.aplayer-narrow .aplayer-body{
+    left: -66px !important;
+  }
+  .aplayer.aplayer-fixed .aplayer-lrc {
+    display: none;
+  }
+  .aplayer .aplayer-lrc.aplayer-lrc-hide {
+      display:none !important;
+  }
+  .aplayer.aplayer-fixed .lrc-show {
+    display: block;
+    background: rgba(255, 255, 255, 0.8);
+  }
+</style>
+<div class="aplayer"
+
+    data-id="2725346449"
+
+    data-server="netease"
+
+    data-type="playlist"
+
+    data-fixed="true"
+
+    data-autoplay="false"
+
+    data-loop="all"
+
+    data-order="random"
+
+    data-preload="auto"
+
+    data-volume="0.7"
+
+    data-mutex="true"
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script>
+<script>
+  $(function(){
+    $('body').on('click', '.aplayer', function(){
+      if($('.aplayer-button').hasClass('aplayer-play')) {
+        $('.aplayer-lrc').removeClass('lrc-show');
+      } else {
+        $('.aplayer-lrc').addClass('lrc-show');
+      }
+    })
+  });
+</script>
+</html>

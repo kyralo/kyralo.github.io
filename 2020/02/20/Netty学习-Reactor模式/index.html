@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Netty学习- Reactor模式 - kyralo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="kyralo,"> 
+    <meta name="description" content="一. 传统阻塞I/O服务模型工作原理图
+    先了解传统I/O的原理以及从传统I/O到Reactor模式的转变才能更深刻地理解Reactor模式.
+
+
+
+模型特点
+采用阻塞IO模式获取输入的数据
+,"> 
+    <meta name="author" content="kyralo"> 
+    
+    <link rel="icon" href="/img/favicon.ico"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+    <!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <!-- <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script> -->
+</head>
+</html>
+<body class="loading">
+    <span id="config-title" style="display:none">kyralo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://www.kyralo.online"></a>
+    <!-- <div title="播放/暂停" class="icon-play"></div> -->
+    <h3 class="subtitle">Netty学习- Reactor模式</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Netty学习- Reactor模式</h1>
+        <div class="stuff">
+            <span>二月 20, 2020</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/Netty/">Netty</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/Reactor/">Reactor</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/线程模型/">线程模型</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h3 id="一-传统阻塞I-O服务模型"><a href="#一-传统阻塞I-O服务模型" class="headerlink" title="一. 传统阻塞I/O服务模型"></a>一. 传统阻塞I/O服务模型</h3><h4 id="工作原理图"><a href="#工作原理图" class="headerlink" title="工作原理图"></a>工作原理图</h4><p>
+    先了解传统I/O的原理以及从传统I/O到Reactor模式的转变才能更深刻地理解Reactor模式.
+</p>
+
+<p><img src="https://view.2heng.xin/images/2020/02/20/IO.png" alt></p>
+<h4 id="模型特点"><a href="#模型特点" class="headerlink" title="模型特点"></a>模型特点</h4><ul>
+<li>采用阻塞IO模式获取输入的数据</li>
+<li>每个连接都需要独立的线程完成数据的输入, 业务处理, 数据返回</li>
+</ul>
+<h4 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h4><ul>
+<li>当并发数特别大时, 服务端会创建大量线程, 占用大量系统资源</li>
+<li>连接建立后, 若当前线程暂时没有数据可读, 该线程会阻塞在read操作, 造成线程资源浪费</li>
+</ul>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>针对传统阻塞io服务模型的2个缺点有以下两种解决方案: </p>
+
+<ol>
+<li><p>基于I/O复用模型：多个连接共用一个阻塞对象，应用程序只需要在一个阻塞对象等待，无需阻塞等待所有连接。当某个连接有新的数据可以处理时，操作系统通知应用程序，线程从阻塞状态返回，开始进行业务处理Reactor对应的叫法:1.反应器模式2.分发者模式(Dispatcher) 3.通知者模式(notifier)</p>
+</li>
+<li><p>基于线程池复用线程资源：不必再为每个连接创建线程，将连接完成后的业务处理任务分配给线程进行处理，一个线程可以处理多个连接的业务</p>
+</li>
+</ol>
+<p><span style="color: red">I/O复用结合线程池，就是Reactor模式基本设计思想<br></span></p>
+<h3 id="二-Reactor模式"><a href="#二-Reactor模式" class="headerlink" title="二. Reactor模式"></a>二. Reactor模式</h3><h4 id="Reactor模式基本说明"><a href="#Reactor模式基本说明" class="headerlink" title="Reactor模式基本说明"></a>Reactor模式基本说明</h4><ul>
+<li>Reactor模式，通过一个或多个输入同时传递给服务处理器的模式(基于事件驱动)</li>
+<li>服务器端程序处理传入的多个请求,并将它们同步分派到相应的处理线程， 因此Reactor模式也叫Dispatcher模式</li>
+<li>Reactor模式使用IO复用监听事件,收到事件后，分发给某个线程(进程),这点就是网络服务器高并发处理关键</li>
+</ul>
+<h4 id="Reactor模式核心组成"><a href="#Reactor模式核心组成" class="headerlink" title="Reactor模式核心组成"></a>Reactor模式核心组成</h4><ol>
+<li>Reactor：Reactor在一个单独的线程中运行，负责监听和分发事件，分发给适当的处理程序来对IO事件做出反应。它就像公司的电话接线员，它接听来自客户的电话并将线路转移到适当的联系人；</li>
+<li>Handlers：处理程序执行I/O事件要完成的实际事件，类似于客户想要与之交谈的公司中的实际官员。Reactor通过调度适当的处理程序来响应I/O事件，处理程序执行非阻塞操作。</li>
+</ol>
+<h4 id="Reactor模式分类"><a href="#Reactor模式分类" class="headerlink" title="Reactor模式分类"></a>Reactor模式分类</h4><p>根据Reactor的数量和处理资源池线程的数量不同，有3种典型的实现</p>
+<ol>
+<li>单Reactor单线程</li>
+<li>单Reactor多线程</li>
+<li>主从Reactor多线程</li>
+</ol>
+<h4 id="单Reactor单线程"><a href="#单Reactor单线程" class="headerlink" title="单Reactor单线程"></a>单Reactor单线程</h4><p>原理图</p>
+
+<p><img src="https://view.2heng.xin/images/2020/02/21/Reactor.png" alt></p>
+<p>说明</p>
+
+<ol>
+<li>Select是前面IO复用模型介绍的标准网络编程API，可以实现应用程序通过一个阻塞对象监听多路连接请求</li>
+<li>Reactor对象通过Select监控客户端请求事件，收到事件后通过Dispatch进行分发</li>
+<li>如果是建立连接请求事件，则由Acceptor通过Accept处理连接请求，然后创建一个Handler对象处理连接完成后的后续业务处理</li>
+<li>如果不是建立连接事件，则Reactor会分发调用连接对应的Handler来响应</li>
+<li>Handler会完成Read→业务处理→Send的完整业务流程</li>
+</ol>
+<br>
+<p>优缺点分析</p>
+
+<ol>
+<li>优点：模型简单，没有多线程、进程通信、竞争的问题，全部都在一个线程中完成</li>
+<li>缺点：性能问题，只有一个线程，无法完全发挥多核CPU的性能。Handler在处理某个连接上的业务时，整个进程无法处理其他连接事件，很容易导致性能瓶颈</li>
+<li>缺点：可靠性问题，线程意外终止，或者进入死循环，会导致整个系统通信模块不可用，不能接收和处理外部消息，造成节点故障</li>
+<li>使用场景：客户端的数量有限，业务处理非常快速,比如Redis在业务处理的时间复杂度O(1)的情况</li>
+</ol>
+<h4 id="单Reactor多线程"><a href="#单Reactor多线程" class="headerlink" title="单Reactor多线程"></a>单Reactor多线程</h4><p>原理图</p>
+
+<p><img src="https://view.2heng.xin/images/2020/02/21/Reactor.jpg" alt></p>
+<ol>
+<li>Reactor对象通过select监控客户端请求事件,收到事件后，通过dispatch进行分发</li>
+<li>如果建立连接请求,则右Acceptor通过accept处理连接请求,然后创建一个Handler对象处理完成连接后的各种事件</li>
+<li>如果不是连接请求，则由reactor分发调用连接对应的handler来处理</li>
+<li>handler只负责响应事件，不做具体的业务处理,通过read读取数据后，会分发给后面的worker线程池的某个线程处理业务</li>
+<li>worker线程池会分配独立线程完成真正的业务，并将结果返回给handler</li>
+<li>handler收到响应后，通过send将结果返回给client</li>
+</ol>
+<br>
+<p>优缺点分析</p>
+
+<ol>
+<li>优点：可以充分的利用多核cpu的处理能力</li>
+<li>缺点：多线程数据共享和访问比较复杂,reactor处理所有的事件的监听和响应,<br>在单线程运行,在高并发场景容易出现性能瓶颈.</li>
+</ol>
+<h4 id="主从Reactor多线程"><a href="#主从Reactor多线程" class="headerlink" title="主从Reactor多线程"></a>主从Reactor多线程</h4><p>工作原理图</p>
+<p>
+    针对单Reactor多线程模型中，Reactor在单线程中运行，高并发场景下容易成为性能瓶颈，可以让Reactor在多线程中运行
+</p>
+
+<p><img src="https://view.2heng.xin/images/2020/02/21/Reactor9984a1a752ffbe0f.png" alt></p>
+<ol>
+<li>Reactor主线程MainReactor对象通过select监听连接事件,收到事件后，通过Acceptor处理连接事件</li>
+<li>当Acceptor   处理连接事件后，MainReactor将连接分配给SubReactor</li>
+<li>subreactor将连接加入到连接队列进行监听,并创建handler进行各种事件处理</li>
+<li>当有新事件发生时，subreactor就会调用对应的handler处理</li>
+<li>handler通过read读取数据，分发给后面的worker线程处理</li>
+<li>worker线程池分配独立的worker线程进行业务处理，并返回结果</li>
+<li>handler收到响应的结果后，再通过send将结果返回给client</li>
+<li>Reactor主线程可以对应多个Reactor子线程,即MainRecator可以关联多个SubReactor</li>
+</ol>
+<br>
+<p>方案优缺点分析</p>
+
+<ol>
+<li>优点：父线程与子线程的数据交互简单职责明确，父线程只需要接收新连接，子线程完成后续的业务处理。</li>
+<li>优点：父线程与子线程的数据交互简单，Reactor主线程只需要把新连接传给子线程，子线程无需返回数据。</li>
+<li>缺点：编程复杂度较高</li>
+<li>结合实例：这种模型在许多项目中广泛使用，包括Nginx主从Reactor多进程模型，Memcached主从多线程，Netty主从多线程模型的支持</li>
+</ol>
+<h4 id="Reactor模式小结"><a href="#Reactor模式小结" class="headerlink" title="Reactor模式小结"></a>Reactor模式小结</h4><ol>
+<li>单Reactor单线程，前台接待员和服务员是同一个人，全程为顾客服</li>
+<li>单Reactor多线程，1个前台接待员，多个服务员，接待员只负责接待</li>
+<li>主从Reactor多线程，多个前台接待员，多个服务生</li>
+</ol>
+<br>
+<p>Reactor模式具有如下的优点</p>
+
+<ol>
+<li>响应快，不必为单个同步时间所阻塞，虽然Reactor本身依然是同步的</li>
+<li>可以最大程度的避免复杂的多线程及同步问题，并且避免了多线程/进程的切换开销</li>
+<li>扩展性好，可以方便的通过增加Reactor实例个数来充分利用CPU资源</li>
+<li>复用性好，Reactor模型本身与具体事件处理逻辑无关，具有很高的复用性</li>
+</ol>
+
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='false'
+        data-ci='eeec43124e53633945c0'
+        data-cs='e2332cffb30ae24f185c1701286958cddd748ffb'
+        data-r='kyralo.github.io'
+        data-o='kyralo'
+        data-a='kyralo'
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一-传统阻塞I-O服务模型"><span class="toc-number">1.</span> <span class="toc-text">一. 传统阻塞I/O服务模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#工作原理图"><span class="toc-number">1.1.</span> <span class="toc-text">工作原理图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#模型特点"><span class="toc-number">1.2.</span> <span class="toc-text">模型特点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#问题分析"><span class="toc-number">1.3.</span> <span class="toc-text">问题分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解决方案"><span class="toc-number">1.4.</span> <span class="toc-text">解决方案</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二-Reactor模式"><span class="toc-number">2.</span> <span class="toc-text">二. Reactor模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Reactor模式基本说明"><span class="toc-number">2.1.</span> <span class="toc-text">Reactor模式基本说明</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Reactor模式核心组成"><span class="toc-number">2.2.</span> <span class="toc-text">Reactor模式核心组成</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Reactor模式分类"><span class="toc-number">2.3.</span> <span class="toc-text">Reactor模式分类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#单Reactor单线程"><span class="toc-number">2.4.</span> <span class="toc-text">单Reactor单线程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#单Reactor多线程"><span class="toc-number">2.5.</span> <span class="toc-text">单Reactor多线程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#主从Reactor多线程"><span class="toc-number">2.6.</span> <span class="toc-text">主从Reactor多线程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Reactor模式小结"><span class="toc-number">2.7.</span> <span class="toc-text">Reactor模式小结</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-146789315-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script>
+<style>
+  .aplayer .aplayer-lrc {
+    height: 35px;
+  }
+  .aplayer .aplayer-lrc p{
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 18px !important;
+  }
+  .aplayer .aplayer-lrc p.aplayer-lrc-current{
+    color: #FF1493;
+  }
+  .aplayer.aplayer-narrow .aplayer-body{
+    left: -66px !important;
+  }
+  .aplayer.aplayer-fixed .aplayer-lrc {
+    display: none;
+  }
+  .aplayer .aplayer-lrc.aplayer-lrc-hide {
+      display:none !important;
+  }
+  .aplayer.aplayer-fixed .lrc-show {
+    display: block;
+    background: rgba(255, 255, 255, 0.8);
+  }
+</style>
+<div class="aplayer"
+
+    data-id="2725346449"
+
+    data-server="netease"
+
+    data-type="playlist"
+
+    data-fixed="true"
+
+    data-autoplay="false"
+
+    data-loop="all"
+
+    data-order="random"
+
+    data-preload="auto"
+
+    data-volume="0.7"
+
+    data-mutex="true"
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script>
+<script>
+  $(function(){
+    $('body').on('click', '.aplayer', function(){
+      if($('.aplayer-button').hasClass('aplayer-play')) {
+        $('.aplayer-lrc').removeClass('lrc-show');
+      } else {
+        $('.aplayer-lrc').addClass('lrc-show');
+      }
+    })
+  });
+</script>
+</html>

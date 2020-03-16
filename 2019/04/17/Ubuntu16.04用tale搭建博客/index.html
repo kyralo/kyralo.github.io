@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ubuntu16.04用tale搭建博客 - kyralo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="kyralo,"> 
+    <meta name="description" content="运行环境准备：​    1.Java环境（版本1.8以上并且一定要配置环境变量）；2.安装MySQL并建库​        mysql&amp;gt; create database tale  defau,"> 
+    <meta name="author" content="kyralo"> 
+    
+    <link rel="icon" href="/img/favicon.ico"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+</head>
+</html>
+<body class="loading">
+    <span id="config-title" style="display:none">kyralo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://kyralo.github.io"></a>
+    <!-- <div title="播放/暂停" class="icon-play"></div> -->
+    <h3 class="subtitle">Ubuntu16.04用tale搭建博客</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Ubuntu16.04用tale搭建博客</h1>
+        <div class="stuff">
+            <span>四月 17, 2019</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/博客/">博客</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h3 id="运行环境准备："><a href="#运行环境准备：" class="headerlink" title="运行环境准备："></a>运行环境准备：</h3><h4 id="​-1-Java环境（版本1-8以上并且一定要配置环境变量）；"><a href="#​-1-Java环境（版本1-8以上并且一定要配置环境变量）；" class="headerlink" title="​    1.Java环境（版本1.8以上并且一定要配置环境变量）；"></a>​    1.Java环境（版本1.8以上并且一定要配置环境变量）；</h4><h4 id="2-安装MySQL并建库"><a href="#2-安装MySQL并建库" class="headerlink" title="2.安装MySQL并建库"></a>2.安装MySQL并建库</h4><p>​        mysql&gt; create database <code>tale</code>  default character set utf8 collate utf8_general_ci;</p>
+<h4 id="​-3-下载tale博客系统"><a href="#​-3-下载tale博客系统" class="headerlink" title="​    3.下载tale博客系统"></a>​    3.下载tale博客系统</h4><p>​        直接到 <a href="https://github.com/otale/tale/releases" target="_blank" rel="noopener">https://github.com/otale/tale/releases</a> 下载 tale.tar.gz </p>
+<p>​        接着使用 FileZilla  将该压缩包先在本地解压然后再上传到服务器上  （这里我上传在/home/admin/blog/ 目录下）</p>
+<p>​        然后在右边tale处右键鼠标修改文件权限为777（FileZilla可直接这样修改文件权限）</p>
+<p>​        然后用远程工具 Putty 登入服务器</p>
+<p>​        进入到tale所在文件夹</p>
+<p>​        cd /home/admin/blog/tale</p>
+<p>​        再执行</p>
+<p>​        sh tool start</p>
+<p>​        OK.这里tale系统这部分就完成了</p>
+<h4 id="​-4-安装nginx并配置IP"><a href="#​-4-安装nginx并配置IP" class="headerlink" title="​    4.安装nginx并配置IP"></a>​    4.安装nginx并配置IP</h4><p>​        首先安装nginx</p>
+<p>​        sudo apt-get install nginx</p>
+<p>​        然后配置IP</p>
+<p>​        sudo apt-get install vim   （安装vim工具，若已安装请忽略）</p>
+<p>​        sudo vim /etc/nginx/sites-available/default    </p>
+<p>​        修改配置文件如下：（其他不同的部分加 # 字符注释掉即可）</p>
+<p>​        server {</p>
+<p>​                    listen 80 default_server;<br>​                        listen [::]:80 default_server ipv6only=on;<br>​<br>​                    server_name 你的服务器的公网IP或域名; // 没有网址就写localhost<br>​                location / {<br>​<br>​                        proxy_pass <a href="http://0.0.0.0:9000" target="_blank" rel="noopener">http://0.0.0.0:9000</a>;<br>​<br>​                }<br>​        }</p>
+<p>​</p>
+<p>​    最后</p>
+<p>​        按esc</p>
+<p>​        “shift” + “：”</p>
+<p>​        输入wq! +回车保存并退出</p>
+<p>​</p>
+<p>​    配置完成重新启动nginx</p>
+<p>​        sudo service nginx restart</p>
+<p>​</p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>​    直接在浏览器输入你的域名或者IP</p>
+<p>​    进入设置界面（这里我当初搭时候没有截图就不放效果了）</p>
+<p>​        输入昵称加密码注册一下就能进了</p>
+<p>​        最后的效果如图</p>
+<p><img src="/home/admin/blog/img/1/3.png" alt><br>​    进入管理界面</p>
+<p>​        直接在浏览器输 ：   你的IP或域名+/admin     就能进了。</p>
+<p>至此 tale 博客搭建完成！</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='false'
+        data-ci='eeec43124e53633945c0'
+        data-cs='e2332cffb30ae24f185c1701286958cddd748ffb'
+        data-r='kyralo.github.io'
+        data-o='kyralo'
+        data-a='kyralo'
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#运行环境准备："><span class="toc-number">1.</span> <span class="toc-text">运行环境准备：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#​-1-Java环境（版本1-8以上并且一定要配置环境变量）；"><span class="toc-number">1.1.</span> <span class="toc-text">​    1.Java环境（版本1.8以上并且一定要配置环境变量）；</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-安装MySQL并建库"><span class="toc-number">1.2.</span> <span class="toc-text">2.安装MySQL并建库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#​-3-下载tale博客系统"><span class="toc-number">1.3.</span> <span class="toc-text">​    3.下载tale博客系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#​-4-安装nginx并配置IP"><span class="toc-number">1.4.</span> <span class="toc-text">​    4.安装nginx并配置IP</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试"><span class="toc-number">2.</span> <span class="toc-text">测试</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-146789315-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script>
+<style>
+  .aplayer .aplayer-lrc {
+    height: 35px;
+  }
+  .aplayer .aplayer-lrc p{
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 18px !important;
+  }
+  .aplayer .aplayer-lrc p.aplayer-lrc-current{
+    color: #FF1493;
+  }
+  .aplayer.aplayer-narrow .aplayer-body{
+    left: -66px !important;
+  }
+  .aplayer.aplayer-fixed .aplayer-lrc {
+    display: none;
+  }
+  .aplayer .aplayer-lrc.aplayer-lrc-hide {
+      display:none !important;
+  }
+  .aplayer.aplayer-fixed .lrc-show {
+    display: block;
+    background: rgba(255, 255, 255, 0.8);
+  }
+</style>
+<div class="aplayer"
+
+    data-id="2725346449"
+
+    data-server="netease"
+
+    data-type="playlist"
+
+    data-fixed="true"
+
+    data-autoplay="false"
+
+    data-loop="all"
+
+    data-order="random"
+
+    data-preload="auto"
+
+    data-volume="0.7"
+
+    data-mutex="true"
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script>
+<script>
+  $(function(){
+    $('body').on('click', '.aplayer', function(){
+      if($('.aplayer-button').hasClass('aplayer-play')) {
+        $('.aplayer-lrc').removeClass('lrc-show');
+      } else {
+        $('.aplayer-lrc').addClass('lrc-show');
+      }
+    })
+  });
+</script>
+</html>

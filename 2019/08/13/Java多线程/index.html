@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Java多线程 - kyralo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="kyralo,"> 
+    <meta name="description" content="1.串行与并发串行:进程或线程有序进行,一个一个执行.
+并发:进程或线程同时进行,不考虑顺序.
+2.进程与线程的区别一个进程包含一个或多个线程(至少一个线程),当进程所拥有的线程数为0时,进入销毁状,"> 
+    <meta name="author" content="kyralo"> 
+    
+    <link rel="icon" href="/img/favicon.ico"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+    <!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <!-- <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script> -->
+</head>
+</html>
+<body class="loading">
+    <span id="config-title" style="display:none">kyralo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://www.kyralo.online"></a>
+    <!-- <div title="播放/暂停" class="icon-play"></div> -->
+    <h3 class="subtitle">Java多线程</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Java多线程</h1>
+        <div class="stuff">
+            <span>八月 13, 2019</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/Java/">Java</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/多线程/">多线程</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h3 id="1-串行与并发"><a href="#1-串行与并发" class="headerlink" title="1.串行与并发"></a>1.串行与并发</h3><h4 id="串行"><a href="#串行" class="headerlink" title="串行:"></a>串行:</h4><p>进程或线程有序进行,一个一个执行.</p>
+<h4 id="并发"><a href="#并发" class="headerlink" title="并发:"></a>并发:</h4><p>进程或线程同时进行,不考虑顺序.</p>
+<h3 id="2-进程与线程的区别"><a href="#2-进程与线程的区别" class="headerlink" title="2.进程与线程的区别"></a>2.进程与线程的区别</h3><p>一个进程包含一个或多个线程(至少一个线程),<br>当进程所拥有的线程数为0时,进入销毁状态.</p>
+<p>进程间资源不共享,同一个进程下的多个线程间的可以实现资源共享.</p>
+<h3 id="3-线程的生命周期"><a href="#3-线程的生命周期" class="headerlink" title="3.线程的生命周期"></a>3.线程的生命周期</h3><h4 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期:"></a>生命周期:</h4><p>在程序开发中,将一个对象从被实例化完成,到这个对象使用结束,并销毁的过程.</p>
+<h4 id="线程的生命周期"><a href="#线程的生命周期" class="headerlink" title="线程的生命周期:"></a>线程的生命周期:</h4><p>一个线程被实例化完成,到这个线程被销毁的过程.</p>
+<h4 id="线程的状态"><a href="#线程的状态" class="headerlink" title="线程的状态"></a>线程的状态</h4><p>1.新生态: New<br>    一个线程对象被实例化完成,但是还没有做任何操作.</p>
+<p>2.就绪态: Ready<br>    一个线程已经被开启,开始争抢CPU时间片.</p>
+<p>3.运行态: Run<br>    一个线程抢到了CPU时间片,开始执行这个线程中的逻辑.</p>
+<p>4.阻塞态: Interrupt<br>    一个线程在运行的过程中,受到某些操作的影响,放弃了已经获得的CPU时间片,并且不在参与CPU时间片的争取,此时线程处于挂起状态.</p>
+<p>5.死亡态: Dead<br>    线程对象被销毁.</p>
+<h4 id="线程的生命周期流程图"><a href="#线程的生命周期流程图" class="headerlink" title="线程的生命周期流程图"></a>线程的生命周期流程图</h4><p><img src="https://view.moezx.cc/images/2019/08/13/5a7f22744a9e00e4baee0b00267fb729.png" alt></p>
+
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='false'
+        data-ci='eeec43124e53633945c0'
+        data-cs='e2332cffb30ae24f185c1701286958cddd748ffb'
+        data-r='kyralo.github.io'
+        data-o='kyralo'
+        data-a='kyralo'
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-串行与并发"><span class="toc-number">1.</span> <span class="toc-text">1.串行与并发</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#串行"><span class="toc-number">1.1.</span> <span class="toc-text">串行:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#并发"><span class="toc-number">1.2.</span> <span class="toc-text">并发:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-进程与线程的区别"><span class="toc-number">2.</span> <span class="toc-text">2.进程与线程的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-线程的生命周期"><span class="toc-number">3.</span> <span class="toc-text">3.线程的生命周期</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#生命周期"><span class="toc-number">3.1.</span> <span class="toc-text">生命周期:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#线程的生命周期"><span class="toc-number">3.2.</span> <span class="toc-text">线程的生命周期:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#线程的状态"><span class="toc-number">3.3.</span> <span class="toc-text">线程的状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#线程的生命周期流程图"><span class="toc-number">3.4.</span> <span class="toc-text">线程的生命周期流程图</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-146789315-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script>
+<style>
+  .aplayer .aplayer-lrc {
+    height: 35px;
+  }
+  .aplayer .aplayer-lrc p{
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 18px !important;
+  }
+  .aplayer .aplayer-lrc p.aplayer-lrc-current{
+    color: #FF1493;
+  }
+  .aplayer.aplayer-narrow .aplayer-body{
+    left: -66px !important;
+  }
+  .aplayer.aplayer-fixed .aplayer-lrc {
+    display: none;
+  }
+  .aplayer .aplayer-lrc.aplayer-lrc-hide {
+      display:none !important;
+  }
+  .aplayer.aplayer-fixed .lrc-show {
+    display: block;
+    background: rgba(255, 255, 255, 0.8);
+  }
+</style>
+<div class="aplayer"
+
+    data-id="2725346449"
+
+    data-server="netease"
+
+    data-type="playlist"
+
+    data-fixed="true"
+
+    data-autoplay="false"
+
+    data-loop="all"
+
+    data-order="random"
+
+    data-preload="auto"
+
+    data-volume="0.7"
+
+    data-mutex="true"
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script>
+<script>
+  $(function(){
+    $('body').on('click', '.aplayer', function(){
+      if($('.aplayer-button').hasClass('aplayer-play')) {
+        $('.aplayer-lrc').removeClass('lrc-show');
+      } else {
+        $('.aplayer-lrc').addClass('lrc-show');
+      }
+    })
+  });
+</script>
+</html>

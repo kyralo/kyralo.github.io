@@ -1,0 +1,285 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Netty学习-java BIO编程 - kyralo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="kyralo,"> 
+    <meta name="description" content="一. Java BIO 基本介绍
+Java bio 就是传统java io
+
+  同步且阻塞, 服务端实现为一个连接一个线程, 每当客户端有连接请求时就启动一个线程,
+  如果这个连接不做任何事就会,"> 
+    <meta name="author" content="kyralo"> 
+    
+    <link rel="icon" href="/img/favicon.ico"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+    <!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <!-- <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script> -->
+</head>
+</html>
+<body class="loading">
+    <span id="config-title" style="display:none">kyralo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://www.kyralo.online"></a>
+    <!-- <div title="播放/暂停" class="icon-play"></div> -->
+    <h3 class="subtitle">Netty学习-java BIO编程</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Netty学习-java BIO编程</h1>
+        <div class="stuff">
+            <span>二月 08, 2020</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/BIO/">BIO</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/IO/">IO</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/Java/">Java</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h4 id="一-Java-BIO-基本介绍"><a href="#一-Java-BIO-基本介绍" class="headerlink" title="一. Java BIO 基本介绍"></a>一. Java BIO 基本介绍</h4><ul>
+<li><p>Java bio 就是传统java io</p></li>
+<li><p>
+  同步且阻塞, 服务端实现为一个连接一个线程, 每当客户端有连接请求时就启动一个线程,
+  如果这个连接不做任何事就会造成线程资源浪费, 可以通过<span style="color: red">线程池机制</span>改善.
+</p></li>
+<li><p>
+  bio方式适用于连接数目较小且固定的架构, 对服务器资源要求高, 并发局限于Application, JDK1.4以前的唯一选择.
+</p>
+
+
+
+</li>
+</ul>
+<h4 id="二-Java-BIO-工作流程"><a href="#二-Java-BIO-工作流程" class="headerlink" title="二. Java BIO 工作流程"></a>二. Java BIO 工作流程</h4><p><img src="https://view.2heng.xin/images/2020/02/07/netty-java-bio.png" alt></p>
+<h5 id="解读"><a href="#解读" class="headerlink" title="解读:"></a>解读:</h5><p>
+    <ol>
+        <li>
+            首先, 服务端启动一个ServerSocket
+        </li>
+        <li>
+            然后, 客户端启动Socket对服务器进行通信, 默认情况服务端每有一个客户端就启动一个线程与之通信
+        </li>
+        <li>
+            客户端发出请求后, 服务端会先查看有没有可用的线程, 若没有则让客户端等等,
+            或者直接拒绝连接; 如果有线程可用, 客户端会在连接请求结束后在继续执行.
+        </li>
+    </ol>
+</p>
+
+
+
+<h4 id="三-Java-BIO应用实例"><a href="#三-Java-BIO应用实例" class="headerlink" title="三. Java BIO应用实例"></a>三. Java BIO应用实例</h4><h5 id="实例说明"><a href="#实例说明" class="headerlink" title="实例说明:"></a>实例说明:</h5><p>
+    <ol>
+        <li>
+          使用BIO模型编写一个服务端, 单客户端有连接时, 就启动线程通信  
+        </li>
+        <li>
+            使用线程池机制改善连接
+        </li>
+        <li>
+            服务端可以接收客户端发送的数据
+        </li>
+    </ol>
+</p>
+
+<h5 id="代码"><a href="#代码" class="headerlink" title="代码:"></a>代码:</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> io.netty.util.concurrent.DefaultThreadFactory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.ServerSocket;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BioServer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 客户端消息处理</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> socket socket</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">handler</span><span class="params">(Socket socket)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">"线程id = "</span> + Thread.currentThread().getId() +</span><br><span class="line">                    <span class="string">" 名字 = "</span> + Thread.currentThread().getName());</span><br><span class="line"></span><br><span class="line">            <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line"></span><br><span class="line">            InputStream inputStream = socket.getInputStream();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                System.out.println(<span class="string">"线程id = "</span> + Thread.currentThread().getId() +</span><br><span class="line">                        <span class="string">" 名字 = "</span> + Thread.currentThread().getName());</span><br><span class="line"></span><br><span class="line">                System.out.println(<span class="string">"&gt;&gt;&gt; read ...."</span>);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">int</span> read = inputStream.read(bytes);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (read != -<span class="number">1</span>) &#123;</span><br><span class="line">                    System.out.println(<span class="keyword">new</span> String(bytes, <span class="number">0</span>, read));</span><br><span class="line">                &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">"关闭client的连接"</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span>&#123;</span><br><span class="line">                socket.close();</span><br><span class="line">            &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建线程池</span></span><br><span class="line">        ExecutorService newCachedThreadPool = <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">0</span>, Integer.MAX_VALUE,</span><br><span class="line">                <span class="number">60L</span>, TimeUnit.SECONDS,</span><br><span class="line">                <span class="keyword">new</span> SynchronousQueue&lt;&gt;(),</span><br><span class="line">                <span class="keyword">new</span> DefaultThreadFactory(<span class="string">"newCachedThreadPool"</span>));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 创建SeverSocket</span></span><br><span class="line">        ServerSocket serverSocket = <span class="keyword">new</span> ServerSocket(<span class="number">8888</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"&gt;&gt;&gt; Server starting ...... "</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>)&#123;</span><br><span class="line">            System.out.println(</span><br><span class="line">                    <span class="string">"线程id = "</span> + Thread.currentThread().getId() +</span><br><span class="line">                    <span class="string">" 名字 = "</span> + Thread.currentThread().getName());</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">"&gt;&gt;&gt; waiting to connect ....."</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">/* </span></span><br><span class="line"><span class="comment">             监听客户端连接, 没有连接时, </span></span><br><span class="line"><span class="comment">             serverSocket.accept()方法会 -&gt; 阻塞 &lt;- 在此,</span></span><br><span class="line"><span class="comment">             直到有客户端连接 </span></span><br><span class="line"><span class="comment">            */</span> </span><br><span class="line">            <span class="keyword">final</span> Socket socket = serverSocket.accept();</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">"连接到一个客户端"</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 连接到一个客户端就从线程池里取线程执行</span></span><br><span class="line">            newCachedThreadPool.execute(() -&gt; handler(socket));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">连接到一个客户端</span><br><span class="line">线程id = 1 名字 = main</span><br><span class="line">&gt;&gt;&gt; waiting to connect .....</span><br><span class="line">连接到一个客户端</span><br><span class="line">线程id = 1 名字 = main</span><br><span class="line">&gt;&gt;&gt; waiting to connect .....</span><br><span class="line">线程id = 13 名字 = newCachedThreadPool-1-3</span><br><span class="line">线程id = 13 名字 = newCachedThreadPool-1-3</span><br><span class="line">&gt;&gt;&gt; read ....</span><br><span class="line">线程id = 14 名字 = newCachedThreadPool-1-4</span><br><span class="line">线程id = 14 名字 = newCachedThreadPool-1-4</span><br><span class="line">&gt;&gt;&gt; read ....</span><br><span class="line">GET / HTTP/1.1</span><br><span class="line">Host: 127.0.0.1:8888</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.9 Safari/537.36</span><br><span class="line">Sec-Fetch-User: ?1</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3</span><br><span class="line">Purpose: prefetch</span><br><span class="line">Sec-Fetch-Site: none</span><br><span class="line">Sec-Fetch-Mode: navigate</span><br><span class="line">Accept-Encoding: gzip, deflate, br</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.9</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">线程id = 14 名字 = newCachedThreadPool-1-4</span><br><span class="line">&gt;&gt;&gt; read ....</span><br><span class="line">关闭client的连接</span><br><span class="line">GET / HTTP/1.1</span><br><span class="line">Host: 127.0.0.1:8888</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.9 Safari/537.36</span><br><span class="line">Sec-Fetch-User: ?1</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3</span><br><span class="line">Sec-Fetch-Site: none</span><br><span class="line">Sec-Fetch-Mode: navigate</span><br><span class="line">Accept-Encoding: gzip, deflate, br</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.9</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">线程id = 13 名字 = newCachedThreadPool-1-3</span><br><span class="line">&gt;&gt;&gt; read ....</span><br><span class="line">关闭client的连接</span><br></pre></td></tr></table></figure>
+
+<p>
+    从结果看, 发生了两次请求, 因为Google浏览器当你发送请求时会有一次请求
+    网站图标(/favicon.ico).
+    从线程信息打印的结果看, 客户端连接过程中并不是只使用一个线程,
+    说明线程池起到了作用
+</p>
+
+
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='false'
+        data-ci='eeec43124e53633945c0'
+        data-cs='e2332cffb30ae24f185c1701286958cddd748ffb'
+        data-r='kyralo.github.io'
+        data-o='kyralo'
+        data-a='kyralo'
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#一-Java-BIO-基本介绍"><span class="toc-number">1.</span> <span class="toc-text">一. Java BIO 基本介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#二-Java-BIO-工作流程"><span class="toc-number">2.</span> <span class="toc-text">二. Java BIO 工作流程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#解读"><span class="toc-number">2.1.</span> <span class="toc-text">解读:</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#三-Java-BIO应用实例"><span class="toc-number">3.</span> <span class="toc-text">三. Java BIO应用实例</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#实例说明"><span class="toc-number">3.1.</span> <span class="toc-text">实例说明:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#代码"><span class="toc-number">3.2.</span> <span class="toc-text">代码:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#结果"><span class="toc-number">3.3.</span> <span class="toc-text">结果</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-146789315-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script>
+<style>
+  .aplayer .aplayer-lrc {
+    height: 35px;
+  }
+  .aplayer .aplayer-lrc p{
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 18px !important;
+  }
+  .aplayer .aplayer-lrc p.aplayer-lrc-current{
+    color: #FF1493;
+  }
+  .aplayer.aplayer-narrow .aplayer-body{
+    left: -66px !important;
+  }
+  .aplayer.aplayer-fixed .aplayer-lrc {
+    display: none;
+  }
+  .aplayer .aplayer-lrc.aplayer-lrc-hide {
+      display:none !important;
+  }
+  .aplayer.aplayer-fixed .lrc-show {
+    display: block;
+    background: rgba(255, 255, 255, 0.8);
+  }
+</style>
+<div class="aplayer"
+
+    data-id="2725346449"
+
+    data-server="netease"
+
+    data-type="playlist"
+
+    data-fixed="true"
+
+    data-autoplay="false"
+
+    data-loop="all"
+
+    data-order="random"
+
+    data-preload="auto"
+
+    data-volume="0.7"
+
+    data-mutex="true"
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script>
+<script>
+  $(function(){
+    $('body').on('click', '.aplayer', function(){
+      if($('.aplayer-button').hasClass('aplayer-play')) {
+        $('.aplayer-lrc').removeClass('lrc-show');
+      } else {
+        $('.aplayer-lrc').addClass('lrc-show');
+      }
+    })
+  });
+</script>
+</html>

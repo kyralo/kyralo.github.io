@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Netty学习-IO编程 - kyralo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="kyralo,"> 
+    <meta name="description" content="UNIX常见I/O模型基本说明
+
+    使用通道进行数据的发送和接收, 程序通信的性能取决于什么样的通道.
+    
+        对于一次IO访问，数据会先被拷贝到操作系统内核的缓冲区中，然后,"> 
+    <meta name="author" content="kyralo"> 
+    
+    <link rel="icon" href="/img/favicon.ico"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+    <!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <!-- <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script> -->
+</head>
+</html>
+<body class="loading">
+    <span id="config-title" style="display:none">kyralo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://www.kyralo.online"></a>
+    <!-- <div title="播放/暂停" class="icon-play"></div> -->
+    <h3 class="subtitle">Netty学习-IO编程</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Netty学习-IO编程</h1>
+        <div class="stuff">
+            <span>二月 06, 2020</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/IO/">IO</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/Linux/">Linux</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h3 id="UNIX常见I-O模型"><a href="#UNIX常见I-O模型" class="headerlink" title="UNIX常见I/O模型"></a>UNIX常见I/O模型</h3><h4>基本说明</h4>
+<article>
+    使用<span style="color: red">通道</span>进行数据的发送和接收, 程序通信的性能取决于什么样的<span style="color: red">通道</span>.
+    <p>
+        对于一次IO访问，<span style="color: red">数据会先被拷贝到操作系统内核的缓冲区中，然后再从操作系统内核的缓冲区拷贝到应用程序的地址空间。</span>
+    </p>
+    <p>
+        <span style="color: blue">当发生一个IO操作时，它会经历两个阶段：</span>
+        1. 等待数据准备
+        2. 将数据从内核拷贝到进程中
+    </p>
+</article>
+<hr>
+
+<h5 id="BIO-blocking-I-O"><a href="#BIO-blocking-I-O" class="headerlink" title="BIO(blocking I/O):"></a>BIO(blocking I/O):</h5><article>
+    同步并阻塞模型, 为传统io模型, 主要模式为一个连接一个线程, 即当客户端有
+    连接请求时服务端才开启一个线程进行处理.
+    <p>
+        <span style="color: red">BIO的特点就是在IO执行的两个阶段都被锁住了</span>
+    </p>
+</article>
+
+<hr>
+
+<h5 id="NIO-non-blocking-I-O"><a href="#NIO-non-blocking-I-O" class="headerlink" title="NIO(non-blocking I/O):"></a>NIO(non-blocking I/O):</h5><article>
+    同步非阻塞模型, 一个线程处理多个请求, 即客户端发送的请求先注册在多路复用器上,多路复用器经过轮询,遇到I/O请求就进行处理.
+    NIO三个核心对象：<span style="color: red">通道(Channel)</span>、<span style="color: red">缓冲区(Buffer)</span>和<span style="color: red">选择器(Selector)</span>
+    <p>
+        <span style="color: #EC6683">用户发出io请求后</span>, 如果第一阶段的内核数据还没有准备好, 用户进程不会进入等待(不会被锁住), 服务端会<span style="color: #40B260">立即</span>返回一个error, 用户进程收到结果后会<span style="color: #40B260">不断的</span>去请求, <span style="color: #40B260">直到</span>内核数据准备好,
+        然后进入第二阶段, (<span style="color: red">注:</span>但是第二阶段依然会有锁住的情况, NIO只是在数据准备阶段非阻塞)
+        </p><p style="color: red">所以特点是需要不断的主动询问kernel数据准备好了没有</p>
+    <p></p>
+</article>
+<hr>
+
+<h5 id="IO多路复用-I-O-multiplexing"><a href="#IO多路复用-I-O-multiplexing" class="headerlink" title="IO多路复用(I/O multiplexing):"></a>IO多路复用(I/O multiplexing):</h5><article>
+    I/O多路复用模型, 又名事件驱动模型, 使用了<span style="color: red">Reactor</span>设计模式来实现,就是我们用的select，poll，epoll。当用户进程调用了select，那么整个进程会被block，而同时，kernel会“监视”所有select负责的socket，当任何一个socket中的数据准备好了，select就会返回。这个时候用户进程再调用read操作，将数据从kernel拷贝到用户进程。简单的说，就是和阻塞IO处理方式一样，但不同的是，select可以一下把很多很多文件描述符都传过来，然后操作系统内核同时监视他们，只要其中一个就绪，就及时处理那个，而不需要一个个等待处理。
+    <p>
+        但<span style="color: red">select、pselect、poll、epoll本质上都是同步I/O</span>，因为他们都需要在读写事件就绪后自己负责进行读写，也就是说这个读写过程是阻塞的(异步I/O则无需自己负责进行读写，异步I/O的实现会负责把数据从内核拷贝到用户空间。)
+        </p><p>
+            因而IO多路复用的性能可能比阻塞IO还要差，但<span style="color: red">他的优点在于能同时处理多个连接,相比较于同步非阻塞I/O，它的改进的地方在于，原来需要用户进程去轮询的这事儿交给了内核线程帮你完成</span>， 而且这个内核线程可以等待多个socket，能实现同时对多个IO端口进行监听。所以，如果处理的连接数不是很高的话，使用IO多路复用不一定比使用多线程+阻塞IO的性能更好，可能延迟还更大。
+        </p>
+    <p></p>
+</article>
+<hr>
+
+<h5 id="AIO-Asynchronous-I-O"><a href="#AIO-Asynchronous-I-O" class="headerlink" title="AIO(Asynchronous I/O):"></a>AIO(Asynchronous I/O):</h5><article>
+    异步非阻塞, AIO 引入异步通道的概念, 采用<span style="color: red">Proactor</span>模式, 
+    出现有效的请求才启动线程, 特点是先由操作系统完成后才会通知服务端
+    程序去启动线程处理,适用于连接数较多且连接时间较长的应用.
+</article>
+<hr>
+
+<h3 id="同步-异步IO-阻塞-非阻塞IO"><a href="#同步-异步IO-阻塞-非阻塞IO" class="headerlink" title="同步/异步IO,阻塞/非阻塞IO"></a>同步/异步IO,阻塞/非阻塞IO</h3><p><span style="font: 200;color: red">阻塞、非阻塞说的是调用者(Client)。同步、异步说的是被调用者(Server)。</span></p>
+<p>
+    </p><p>
+        阻塞/非阻塞: 一个IO请求,在线程中进行，当这个IO请求没有数据或者没有有效数据拉来完成IO操作，那么这个请求不会结束，而是等待，而这个等待就是阻塞，因为他在等待数据，导致其他IO操作无法进行, 反之则为非阻塞.
+    </p>
+    <p>
+        同步/异步: 同步/异步IO的区分是针对完成实际的IO操作,笼统的说,同步IO就是<span style="color: blue">应用程序完成实际的IO操作</span>,而异步IO就是<span style="color: #8452AF">将实际的IO操作交给操作系统去完成</span>
+    </p>
+<p></p>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><article>
+    <p>
+        阻塞IO：用户一直等操作系统内核完成2个阶段io操作，再继续
+    </p>
+    <p>
+        非阻塞IO：第一阶段用户一直问操作系统有没有准备好，第二阶段等操作系统完成。
+    </p>
+    <p>
+        IO多路复用：用户进程可以同时发多个网络连接IO，操作系统实施监控，虽然用户进程2个阶段都卡住了，但可以处理多个连接。
+    </p>
+    <p>
+        异步IO：用户进程完全把东西交给操作系统完成，自己不管了。
+    </p>
+</article>
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='false'
+        data-ci='eeec43124e53633945c0'
+        data-cs='e2332cffb30ae24f185c1701286958cddd748ffb'
+        data-r='kyralo.github.io'
+        data-o='kyralo'
+        data-a='kyralo'
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#UNIX常见I-O模型"><span class="toc-number">1.</span> <span class="toc-text">UNIX常见I/O模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#null"><span class="toc-number">1.1.</span> <span class="toc-text">基本说明</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#BIO-blocking-I-O"><span class="toc-number">1.1.1.</span> <span class="toc-text">BIO(blocking I/O):</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#NIO-non-blocking-I-O"><span class="toc-number">1.1.2.</span> <span class="toc-text">NIO(non-blocking I/O):</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#IO多路复用-I-O-multiplexing"><span class="toc-number">1.1.3.</span> <span class="toc-text">IO多路复用(I/O multiplexing):</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#AIO-Asynchronous-I-O"><span class="toc-number">1.1.4.</span> <span class="toc-text">AIO(Asynchronous I/O):</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#同步-异步IO-阻塞-非阻塞IO"><span class="toc-number">2.</span> <span class="toc-text">同步/异步IO,阻塞/非阻塞IO</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-146789315-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script>
+<style>
+  .aplayer .aplayer-lrc {
+    height: 35px;
+  }
+  .aplayer .aplayer-lrc p{
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 18px !important;
+  }
+  .aplayer .aplayer-lrc p.aplayer-lrc-current{
+    color: #FF1493;
+  }
+  .aplayer.aplayer-narrow .aplayer-body{
+    left: -66px !important;
+  }
+  .aplayer.aplayer-fixed .aplayer-lrc {
+    display: none;
+  }
+  .aplayer .aplayer-lrc.aplayer-lrc-hide {
+      display:none !important;
+  }
+  .aplayer.aplayer-fixed .lrc-show {
+    display: block;
+    background: rgba(255, 255, 255, 0.8);
+  }
+</style>
+<div class="aplayer"
+
+    data-id="2725346449"
+
+    data-server="netease"
+
+    data-type="playlist"
+
+    data-fixed="true"
+
+    data-autoplay="false"
+
+    data-loop="all"
+
+    data-order="random"
+
+    data-preload="auto"
+
+    data-volume="0.7"
+
+    data-mutex="true"
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script>
+<script>
+  $(function(){
+    $('body').on('click', '.aplayer', function(){
+      if($('.aplayer-button').hasClass('aplayer-play')) {
+        $('.aplayer-lrc').removeClass('lrc-show');
+      } else {
+        $('.aplayer-lrc').addClass('lrc-show');
+      }
+    })
+  });
+</script>
+</html>

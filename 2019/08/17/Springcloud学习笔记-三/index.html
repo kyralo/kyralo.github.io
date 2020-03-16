@@ -1,0 +1,258 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Springcloud学习笔记(三) - kyralo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate">
+    <meta name="keywords" content="kyralo,"> 
+    <meta name="description" content="5、Eureka集群配置1、新建7002、7003Eureka服务项目复制7001的pom、yml文件2、修改域名映射，修改host文件==必须修改，否则不成功==
+
+3、台Eureka的yml配置,"> 
+    <meta name="author" content="kyralo"> 
+    
+    <link rel="icon" href="/img/favicon.ico"> 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <link rel="stylesheet" href="/css/diaspora.css">
+    <!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <!-- <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script> -->
+</head>
+</html>
+<body class="loading">
+    <span id="config-title" style="display:none">kyralo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="https://www.kyralo.online"></a>
+    <!-- <div title="播放/暂停" class="icon-play"></div> -->
+    <h3 class="subtitle">Springcloud学习笔记(三)</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Springcloud学习笔记(三)</h1>
+        <div class="stuff">
+            <span>八月 17, 2019</span>
+            
+  <ul class="post-tags-list"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/Java/">Java</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/Springcloud/">Springcloud</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tagsP/微服务/">微服务</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h2 id="5、Eureka集群配置"><a href="#5、Eureka集群配置" class="headerlink" title="5、Eureka集群配置"></a>5、Eureka集群配置</h2><h3 id="1、新建7002、7003Eureka服务项目复制7001的pom、yml文件"><a href="#1、新建7002、7003Eureka服务项目复制7001的pom、yml文件" class="headerlink" title="1、新建7002、7003Eureka服务项目复制7001的pom、yml文件"></a>1、新建7002、7003Eureka服务项目复制7001的pom、yml文件</h3><h3 id="2、修改域名映射，修改host文件"><a href="#2、修改域名映射，修改host文件" class="headerlink" title="2、修改域名映射，修改host文件"></a>2、修改域名映射，修改host文件</h3><p>==必须修改，否则不成功==</p>
+<p><img src="https://view.moezx.cc/images/2019/08/17/hosts.png" alt></p>
+<h3 id="3、台Eureka的yml配置"><a href="#3、台Eureka的yml配置" class="headerlink" title="3、台Eureka的yml配置"></a>3、台Eureka的yml配置</h3><p><img src="https://view.moezx.cc/images/2019/08/17/eurekac41f1da281617be0.png" alt></p>
+<p>修改7001、7002、7003对应的yml配置</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">service-url:</span></span><br><span class="line">  <span class="comment"># 单机版配置defaultZone: http://$&#123;eureka.instance.hostname&#125;:$&#123;server.port&#125;/eureka #设置与eureka server 交互的地址查询服务和注册服务都需要依赖的地址</span></span><br><span class="line">  <span class="comment">#集群配置</span></span><br><span class="line"><span class="attr">  defaultZone:</span> <span class="attr">http://localhost:7001/eureka,http://localhost:7002/eureka</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4、在8001配置注册"><a href="#4、在8001配置注册" class="headerlink" title="4、在8001配置注册"></a>4、在8001配置注册</h3><p>修改yml中集群的配置，使8001同时注册进7001-3集群环境</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">eureka:</span></span><br><span class="line"><span class="attr">  client:</span></span><br><span class="line"><span class="attr">    service-url:</span></span><br><span class="line"><span class="attr">      defaultZone:</span> <span class="attr">http://localhost:7001/eureka,http://localhost:7002/eureka,http://localhost:7003/eureka</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://view.moezx.cc/images/2019/08/17/eureka.png" alt></p>
+<p><strong>至此有三个eureka集群，一个微服务提供者</strong></p>
+<h3 id="5、Eureka与Zookeeper的区别"><a href="#5、Eureka与Zookeeper的区别" class="headerlink" title="5、Eureka与Zookeeper的区别"></a>5、Eureka与Zookeeper的区别</h3><ul>
+<li><p>CAP理论</p>
+<ul>
+<li><p>C：consistency 强一致性</p>
+</li>
+<li><p>A：Availability 可用性 （HA高可用）</p>
+</li>
+<li><p>P：Partition tolerance 分区容错性</p>
+<p><img src="https://view.moezx.cc/images/2019/08/17/CAP.png" alt></p>
+</li>
+</ul>
+</li>
+<li><p>Eureka遵循AP原则</p>
+<p>弱一致性</p>
+<p>各个节点平等，不存在主存，只要有一台就能保证服务可用，但是可能不是最新的</p>
+<p>网络稳定，当前新注册的服务才会同步到其他节点</p>
+</li>
+<li><p>Zookeeper遵循CP理论</p>
+<p>问题：当master节点由于网络故障，与其他节点失去联系，剩余节点重新进行leader选举。问题在于，选举leader的时间太长，且选举期间zk集群不可用，导致注册服务瘫痪。</p>
+</li>
+</ul>
+
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='false'
+        data-ci='eeec43124e53633945c0'
+        data-cs='e2332cffb30ae24f185c1701286958cddd748ffb'
+        data-r='kyralo.github.io'
+        data-o='kyralo'
+        data-a='kyralo'
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#5、Eureka集群配置"><span class="toc-number">1.</span> <span class="toc-text">5、Eureka集群配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、新建7002、7003Eureka服务项目复制7001的pom、yml文件"><span class="toc-number">1.1.</span> <span class="toc-text">1、新建7002、7003Eureka服务项目复制7001的pom、yml文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、修改域名映射，修改host文件"><span class="toc-number">1.2.</span> <span class="toc-text">2、修改域名映射，修改host文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、台Eureka的yml配置"><span class="toc-number">1.3.</span> <span class="toc-text">3、台Eureka的yml配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、在8001配置注册"><span class="toc-number">1.4.</span> <span class="toc-text">4、在8001配置注册</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、Eureka与Zookeeper的区别"><span class="toc-number">1.5.</span> <span class="toc-text">5、Eureka与Zookeeper的区别</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-146789315-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10/dist/APlayer.min.js"></script>
+<style>
+  .aplayer .aplayer-lrc {
+    height: 35px;
+  }
+  .aplayer .aplayer-lrc p{
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 18px !important;
+  }
+  .aplayer .aplayer-lrc p.aplayer-lrc-current{
+    color: #FF1493;
+  }
+  .aplayer.aplayer-narrow .aplayer-body{
+    left: -66px !important;
+  }
+  .aplayer.aplayer-fixed .aplayer-lrc {
+    display: none;
+  }
+  .aplayer .aplayer-lrc.aplayer-lrc-hide {
+      display:none !important;
+  }
+  .aplayer.aplayer-fixed .lrc-show {
+    display: block;
+    background: rgba(255, 255, 255, 0.8);
+  }
+</style>
+<div class="aplayer"
+
+    data-id="2725346449"
+
+    data-server="netease"
+
+    data-type="playlist"
+
+    data-fixed="true"
+
+    data-autoplay="false"
+
+    data-loop="all"
+
+    data-order="random"
+
+    data-preload="auto"
+
+    data-volume="0.7"
+
+    data-mutex="true"
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/meting@1.2/dist/Meting.min.js"></script>
+<script>
+  $(function(){
+    $('body').on('click', '.aplayer', function(){
+      if($('.aplayer-button').hasClass('aplayer-play')) {
+        $('.aplayer-lrc').removeClass('lrc-show');
+      } else {
+        $('.aplayer-lrc').addClass('lrc-show');
+      }
+    })
+  });
+</script>
+</html>
