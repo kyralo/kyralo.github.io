@@ -328,9 +328,9 @@
       <category term="技术" scheme="https://www.kyralo.online/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="Java" scheme="https://www.kyralo.online/tagsP/Java/"/>
-    
       <category term="Docker" scheme="https://www.kyralo.online/tagsP/Docker/"/>
+    
+      <category term="Java" scheme="https://www.kyralo.online/tagsP/Java/"/>
     
   </entry>
   
@@ -504,9 +504,9 @@
       <category term="技术" scheme="https://www.kyralo.online/categories/%E6%8A%80%E6%9C%AF/"/>
     
     
-      <category term="Docker" scheme="https://www.kyralo.online/tagsP/Docker/"/>
-    
       <category term="Web" scheme="https://www.kyralo.online/tagsP/Web/"/>
+    
+      <category term="Docker" scheme="https://www.kyralo.online/tagsP/Docker/"/>
     
       <category term="MongoDB" scheme="https://www.kyralo.online/tagsP/MongoDB/"/>
     
