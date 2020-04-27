@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate">
     <meta name="keywords" content="kyralo,"> 
-    <meta name="description" content="Channel,EventLoop,ChannelFuture
+    <meta name="description" content="生当如夏花,Channel,EventLoop,ChannelFuture
 Channel —– Socket;
 EventLoop —– 控制流,多线程,并发;
 ChannelFuture —– 异步通知;
@@ -79,7 +79,7 @@ Netty 的 Channel 接口所提供的 API，大大地降低了直接使用 Socket
 <li>NioSctpChannel</li>
 <li>NioSocketChannel</li>
 </ul>
-<h4 id="EventLoop-接口"><a href="#EventLoop-接口" class="headerlink" title="EventLoop 接口"></a>EventLoop 接口</h4><pre><code>EventLoop 定义了 Netty 的核心抽象，用于处理连接的生命周期中所发生的事件。</code></pre><h5 id="Channel、EventLoop、Thread-以及-EventLoopGroup-之间的关系"><a href="#Channel、EventLoop、Thread-以及-EventLoopGroup-之间的关系" class="headerlink" title="Channel、EventLoop、Thread 以及 EventLoopGroup 之间的关系:"></a>Channel、EventLoop、Thread 以及 EventLoopGroup 之间的关系:</h5><p><img src="https://view.moezx.cc/images/2019/10/13/netty.png" alt></p>
+<h4 id="EventLoop-接口"><a href="#EventLoop-接口" class="headerlink" title="EventLoop 接口"></a>EventLoop 接口</h4><pre><code>EventLoop 定义了 Netty 的核心抽象，用于处理连接的生命周期中所发生的事件。</code></pre><h5 id="Channel、EventLoop、Thread-以及-EventLoopGroup-之间的关系"><a href="#Channel、EventLoop、Thread-以及-EventLoopGroup-之间的关系" class="headerlink" title="Channel、EventLoop、Thread 以及 EventLoopGroup 之间的关系:"></a>Channel、EventLoop、Thread 以及 EventLoopGroup 之间的关系:</h5><p><img src="https://cdn.kyralo.online/blog/netty.png" alt></p>
 <p>#####关系</p>
 <ul>
 <li>一个 EventLoopGroup 包含一个或者多个 EventLoop</li>
@@ -117,7 +117,7 @@ ChannelHandler 派生的
 使得事件流经 ChannelPipeline 是 ChannelHandler 的工作，它们是在应用程序的
 初始化或者引导阶段被安装的。这些对象接收事件、执行它们所实现的处理逻辑，并将数据
 传递给链中的下一个ChannelHandler。它们的执行顺序是由它们被添加的顺序所决定的。
-实际上，被我们称为 ChannelPipeline 的是这些 ChannelHandler 的编排顺序.</code></pre><p>一个 Netty 应用程序中入站和出站数据流之间的区别:<br><img src="https://view.moezx.cc/images/2019/10/13/Netty.png" alt></p>
+实际上，被我们称为 ChannelPipeline 的是这些 ChannelHandler 的编排顺序.</code></pre><p>一个 Netty 应用程序中入站和出站数据流之间的区别:<br><img src="https://cdn.kyralo.online/blog/Netty.png" alt></p>
 <pre><code>入站和出站 ChannelHandler 可以被安装到同一个ChannelPipeline中。如果一个消息
 或者任何其他的入站事件被读取，那么它会从ChannelPipeline的头部开始流动，并被传递
 给第一个ChannelInboundHandler.这个 ChannelHandler不一定会实际地修改数据，具

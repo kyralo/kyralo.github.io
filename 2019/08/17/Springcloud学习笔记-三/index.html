@@ -10,9 +10,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate">
     <meta name="keywords" content="kyralo,"> 
-    <meta name="description" content="5、Eureka集群配置1、新建7002、7003Eureka服务项目复制7001的pom、yml文件2、修改域名映射，修改host文件==必须修改，否则不成功==
-
-3、台Eureka的yml配置,"> 
+    <meta name="description" content="生当如夏花,5、Eureka集群配置1、新建7002、7003Eureka服务项目复制7001的pom、yml文件2、修改域名映射，修改host文件==必须修改，否则不成功==
+3、台Eureka的yml配置修,"> 
     <meta name="author" content="kyralo"> 
     
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/kyralo/cdn/ico/favicon.ico"> 
@@ -63,15 +62,12 @@
         </div>
         <div class="content markdown">
             <h2 id="5、Eureka集群配置"><a href="#5、Eureka集群配置" class="headerlink" title="5、Eureka集群配置"></a>5、Eureka集群配置</h2><h3 id="1、新建7002、7003Eureka服务项目复制7001的pom、yml文件"><a href="#1、新建7002、7003Eureka服务项目复制7001的pom、yml文件" class="headerlink" title="1、新建7002、7003Eureka服务项目复制7001的pom、yml文件"></a>1、新建7002、7003Eureka服务项目复制7001的pom、yml文件</h3><h3 id="2、修改域名映射，修改host文件"><a href="#2、修改域名映射，修改host文件" class="headerlink" title="2、修改域名映射，修改host文件"></a>2、修改域名映射，修改host文件</h3><p>==必须修改，否则不成功==</p>
-<p><img src="https://view.moezx.cc/images/2019/08/17/hosts.png" alt></p>
-<h3 id="3、台Eureka的yml配置"><a href="#3、台Eureka的yml配置" class="headerlink" title="3、台Eureka的yml配置"></a>3、台Eureka的yml配置</h3><p><img src="https://view.moezx.cc/images/2019/08/17/eurekac41f1da281617be0.png" alt></p>
-<p>修改7001、7002、7003对应的yml配置</p>
+<h3 id="3、台Eureka的yml配置"><a href="#3、台Eureka的yml配置" class="headerlink" title="3、台Eureka的yml配置"></a>3、台Eureka的yml配置</h3><p>修改7001、7002、7003对应的yml配置</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">service-url:</span></span><br><span class="line">  <span class="comment"># 单机版配置defaultZone: http://$&#123;eureka.instance.hostname&#125;:$&#123;server.port&#125;/eureka #设置与eureka server 交互的地址查询服务和注册服务都需要依赖的地址</span></span><br><span class="line">  <span class="comment">#集群配置</span></span><br><span class="line"><span class="attr">  defaultZone:</span> <span class="attr">http://localhost:7001/eureka,http://localhost:7002/eureka</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="4、在8001配置注册"><a href="#4、在8001配置注册" class="headerlink" title="4、在8001配置注册"></a>4、在8001配置注册</h3><p>修改yml中集群的配置，使8001同时注册进7001-3集群环境</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">eureka:</span></span><br><span class="line"><span class="attr">  client:</span></span><br><span class="line"><span class="attr">    service-url:</span></span><br><span class="line"><span class="attr">      defaultZone:</span> <span class="attr">http://localhost:7001/eureka,http://localhost:7002/eureka,http://localhost:7003/eureka</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="https://view.moezx.cc/images/2019/08/17/eureka.png" alt></p>
 <p><strong>至此有三个eureka集群，一个微服务提供者</strong></p>
 <h3 id="5、Eureka与Zookeeper的区别"><a href="#5、Eureka与Zookeeper的区别" class="headerlink" title="5、Eureka与Zookeeper的区别"></a>5、Eureka与Zookeeper的区别</h3><ul>
 <li><p>CAP理论</p>
@@ -81,10 +77,11 @@
 <li><p>A：Availability 可用性 （HA高可用）</p>
 </li>
 <li><p>P：Partition tolerance 分区容错性</p>
-<p><img src="https://view.moezx.cc/images/2019/08/17/CAP.png" alt></p>
 </li>
 </ul>
 </li>
+</ul>
+<ul>
 <li><p>Eureka遵循AP原则</p>
 <p>弱一致性</p>
 <p>各个节点平等，不存在主存，只要有一台就能保证服务可用，但是可能不是最新的</p>

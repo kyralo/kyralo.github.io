@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate">
     <meta name="keywords" content="kyralo,"> 
-    <meta name="description" content="零拷贝基本介绍
+    <meta name="description" content="生当如夏花,零拷贝基本介绍
     
         CPU不执行拷贝数据从一个存储区域到另一个存储区域的任务，这通常用于通过网络传输一个文件时以减少CPU周期和内存带宽(零拷贝是从操作系统的角度来考虑, 是不,"> 
     <meta name="author" content="kyralo"> 
@@ -89,7 +89,6 @@
 
 <h4 id="传统io读写方式"><a href="#传统io读写方式" class="headerlink" title="传统io读写方式"></a>传统io读写方式</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">File file = <span class="keyword">new</span> File(<span class="string">"index.html"</span>);</span><br><span class="line">RandomAccessFile raf = <span class="keyword">new</span> RandomAccessFile(file, <span class="string">"rw"</span>);</span><br><span class="line"><span class="keyword">byte</span>[] arr = <span class="keyword">new</span> <span class="keyword">byte</span>[(<span class="keyword">int</span>) file.length()];</span><br><span class="line">raf.read(arr);</span><br><span class="line">Socket socket = <span class="keyword">new</span> ServerSocket(<span class="number">8080</span>).accept();</span><br><span class="line">socket.getOutputStream().write(arr);</span><br></pre></td></tr></table></figure>
 
-<h5 id="图示"><a href="#图示" class="headerlink" title="图示"></a>图示</h5><p><img src="https://view.2heng.xin/images/2020/02/18/io.png" alt></p>
 <p style="color: blue">
     <span>相关说明: </span><br>
     <ul>
@@ -123,7 +122,7 @@
     通过内存映射，将文件映射到内核缓冲区，同时，用户空间可以共享内核空间的数据。这样，在进行网络传输时，就可以减少内核空间到用户控件的拷贝次数
 </p>
 
-<h5 id="图示-1"><a href="#图示-1" class="headerlink" title="图示"></a>图示</h5><p><img src="https://view.2heng.xin/images/2020/02/18/mmap.png" alt></p>
+<h5 id="图示"><a href="#图示" class="headerlink" title="图示"></a>图示</h5><p><img src="https://cdn.kyralo.online/blog/mmap.png" alt></p>
 <p style="color: red">
     如图, 使用mmap读写方式经历了3次拷贝(2次DMA拷贝, 1次CPU拷贝),
     4次上下文切换.对比传统io的读写, mmap方式减少了在 user buffer ->socket buffer
@@ -134,7 +133,7 @@
    数据根本不经过用户态，直接从内核缓冲区进入到 Socket Buffer，同时，由于和用户态完全无关，就减少了一次上下文切换。 
 </p>
 
-<p><img src="https://view.2heng.xin/images/2020/02/18/sendfile_2.1.png" alt></p>
+<p><img src="https://cdn.kyralo.online/blog/sendfile_2.1.png" alt></p>
 <p style="color: red">
     如图, Linux 2.1版的sendfile方式经历了3次拷贝(2次DMA拷贝, 1次CPU拷贝),
     3次上下文切换. 对比mmap方式, 减少了一次用户态到内核态的切换
@@ -144,7 +143,7 @@
     Linux 在 2.4 版本中，做了一些修改，避免了从内核缓冲区拷贝到 Socket buffer 的操作，直接拷贝到协议栈，从而再一次减少了数据拷贝。
 </p>
 
-<p><img src="https://view.2heng.xin/images/2020/02/18/sendfile_2.4.png" alt></p>
+<p><img src="https://cdn.kyralo.online/blog/sendfile_2.4.png" alt></p>
 <p style="color: red">
     如图, Linux 2.4版的sendfile方式只经历了2次DMA拷贝, 3次上下文切换,
     组织实现了零拷贝(无CPU拷贝)
@@ -218,7 +217,7 @@
     </div>
     
         <div class='side'>
-            <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#零拷贝基本介绍"><span class="toc-number">1.</span> <span class="toc-text">零拷贝基本介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#零拷贝的优点"><span class="toc-number">2.</span> <span class="toc-text">零拷贝的优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#传统io读写方式"><span class="toc-number">3.</span> <span class="toc-text">传统io读写方式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#图示"><span class="toc-number">3.1.</span> <span class="toc-text">图示</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用mmap读写方式"><span class="toc-number">4.</span> <span class="toc-text">使用mmap读写方式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#图示-1"><span class="toc-number">4.1.</span> <span class="toc-text">图示</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sendfile"><span class="toc-number">5.</span> <span class="toc-text">sendfile</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Linux-2-1版的sendfile函数"><span class="toc-number">5.1.</span> <span class="toc-text">Linux 2.1版的sendfile函数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Linux-2-4版的sendfile函数"><span class="toc-number">5.2.</span> <span class="toc-text">Linux 2.4版的sendfile函数</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#mmap-和-sendfile-的区别"><span class="toc-number">6.</span> <span class="toc-text">mmap 和 sendfile 的区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#NIO零拷贝实例"><span class="toc-number">7.</span> <span class="toc-text">NIO零拷贝实例</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#零拷贝基本介绍"><span class="toc-number">1.</span> <span class="toc-text">零拷贝基本介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#零拷贝的优点"><span class="toc-number">2.</span> <span class="toc-text">零拷贝的优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#传统io读写方式"><span class="toc-number">3.</span> <span class="toc-text">传统io读写方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用mmap读写方式"><span class="toc-number">4.</span> <span class="toc-text">使用mmap读写方式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#图示"><span class="toc-number">4.1.</span> <span class="toc-text">图示</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sendfile"><span class="toc-number">5.</span> <span class="toc-text">sendfile</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Linux-2-1版的sendfile函数"><span class="toc-number">5.1.</span> <span class="toc-text">Linux 2.1版的sendfile函数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Linux-2-4版的sendfile函数"><span class="toc-number">5.2.</span> <span class="toc-text">Linux 2.4版的sendfile函数</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#mmap-和-sendfile-的区别"><span class="toc-number">6.</span> <span class="toc-text">mmap 和 sendfile 的区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#NIO零拷贝实例"><span class="toc-number">7.</span> <span class="toc-text">NIO零拷贝实例</span></a></li></ol>
         </div>
     
 </div>
