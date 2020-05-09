@@ -104,9 +104,10 @@
 <li>单Reactor多线程</li>
 <li>主从Reactor多线程</li>
 </ol>
-<h4 id="单Reactor单线程"><a href="#单Reactor单线程" class="headerlink" title="单Reactor单线程"></a>单Reactor单线程</h4><p>原理图</p>
+<h4 id="单Reactor单线程"><a href="#单Reactor单线程" class="headerlink" title="单Reactor单线程"></a>单Reactor单线程</h4><!-- <p>原理图</p>
 
-<p><img src="https://cdn.kyralo.online/blog/Reactor.png" alt></p>
+![](https://cdn.kyralo.online/blog/Reactor.png) -->
+
 <p>说明</p>
 
 <ol>
@@ -125,9 +126,10 @@
 <li>缺点：可靠性问题，线程意外终止，或者进入死循环，会导致整个系统通信模块不可用，不能接收和处理外部消息，造成节点故障</li>
 <li>使用场景：客户端的数量有限，业务处理非常快速,比如Redis在业务处理的时间复杂度O(1)的情况</li>
 </ol>
-<h4 id="单Reactor多线程"><a href="#单Reactor多线程" class="headerlink" title="单Reactor多线程"></a>单Reactor多线程</h4><p>原理图</p>
+<h4 id="单Reactor多线程"><a href="#单Reactor多线程" class="headerlink" title="单Reactor多线程"></a>单Reactor多线程</h4><!-- <p>原理图</p>
 
-<p><img src="https://cdn.kyralo.online/blog/Reactor.jpg" alt></p>
+![](https://cdn.kyralo.online/blog/Reactor.jpg) -->
+
 <ol>
 <li>Reactor对象通过select监控客户端请求事件,收到事件后，通过dispatch进行分发</li>
 <li>如果建立连接请求,则右Acceptor通过accept处理连接请求,然后创建一个Handler对象处理完成连接后的各种事件</li>
