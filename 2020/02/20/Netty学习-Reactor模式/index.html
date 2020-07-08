@@ -148,7 +148,7 @@
     针对单Reactor多线程模型中，Reactor在单线程中运行，高并发场景下容易成为性能瓶颈，可以让Reactor在多线程中运行
 </p>
 
-<p><img src="https://cdn.kyralo.online/blog/%E4%B8%BB%E4%BB%8EReactor%E5%A4%9A%E7%BA%BF%E7%A8%8B.png" alt></p>
+<p><img src="https://cdn.kyralo.online/blog/%E4%B8%BB%E4%BB%8EReactor%E5%A4%9A%E7%BA%BF%E7%A8%8B-modify.png" alt></p>
 <ol>
 <li>Reactor主线程MainReactor对象通过select监听连接事件,收到事件后，通过Acceptor处理连接事件</li>
 <li>当Acceptor   处理连接事件后，MainReactor将连接分配给SubReactor</li>
