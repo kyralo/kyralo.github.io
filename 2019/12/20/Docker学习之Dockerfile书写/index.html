@@ -18,6 +18,7 @@ Docker通过读取Dockerfile中的指令自动生成映像。
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/kyralo/cdn/ico/favicon.ico"> 
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/kyralo/cdn@v1.0.5/css/diaspora.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/kevinzhao2233/typora-theme-pie/pie.css">
     <!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
     <script>
          (adsbygoogle = window.adsbygoogle || []).push({
@@ -62,15 +63,15 @@ Docker通过读取Dockerfile中的指令自动生成映像。
 
         </div>
         <div class="content markdown">
-            <h3 id="Dockerfile的定义"><a href="#Dockerfile的定义" class="headerlink" title="Dockerfile的定义"></a>Dockerfile的定义</h3><pre><code>Dockerfile是一个包含用于组合映像的命令的文本文档, 
+            <h2 id="Dockerfile的定义"><a href="#Dockerfile的定义" class="headerlink" title="Dockerfile的定义"></a>Dockerfile的定义</h2><pre><code>Dockerfile是一个包含用于组合映像的命令的文本文档, 
 Docker通过读取Dockerfile中的指令自动生成映像。
 构建镜像时使用docker build命令构建,
-可以在docker build命令中使用-f标志指向文件系统中任何位置的Dockerfile。</code></pre><h3 id="Dockerfile文件说明"><a href="#Dockerfile文件说明" class="headerlink" title="Dockerfile文件说明"></a>Dockerfile文件说明</h3><pre><code>基础镜像信息、维护者信息、镜像操作指令和容器启动时执行指令
+可以在docker build命令中使用-f标志指向文件系统中任何位置的Dockerfile。</code></pre><h2 id="Dockerfile文件说明"><a href="#Dockerfile文件说明" class="headerlink" title="Dockerfile文件说明"></a>Dockerfile文件说明</h2><pre><code>基础镜像信息、维护者信息、镜像操作指令和容器启动时执行指令
 `#` 为Dockerfile的注释
 
 为了指定基本映像，第一条指令必须是FROM。一个声明以＃字符开头
 则被视为注释。可以在Docker文件中使用RUN，CMD，FROM，EXPOSE，
-ENV等指令.</code></pre><h3 id="Dockerfile指令"><a href="#Dockerfile指令" class="headerlink" title="Dockerfile指令"></a>Dockerfile指令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">FROM: </span><br><span class="line">指定基础镜像,第一个命令必填.</span><br><span class="line"></span><br><span class="line">e.g </span><br><span class="line">FROM mysql:8.0</span><br></pre></td></tr></table></figure>
+ENV等指令.</code></pre><h2 id="Dockerfile指令"><a href="#Dockerfile指令" class="headerlink" title="Dockerfile指令"></a>Dockerfile指令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">FROM: </span><br><span class="line">指定基础镜像,第一个命令必填.</span><br><span class="line"></span><br><span class="line">e.g </span><br><span class="line">FROM mysql:8.0</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">LABEL:</span><br><span class="line">添加标签,帮助组织镜像、记录许可信息、辅助自动化构建等</span><br><span class="line"></span><br><span class="line">e.g</span><br><span class="line">LABEL com.example.version=&quot;0.0.1-beta&quot;</span><br><span class="line"></span><br><span class="line">LABEL vendor=&quot;ACME Incorporated&quot;</span><br><span class="line"></span><br><span class="line">LABEL com.example.release-date=&quot;2019-12-20&quot;</span><br><span class="line"></span><br><span class="line">LABEL com.example.version.is-production=&quot;&quot;</span><br></pre></td></tr></table></figure>
 
@@ -109,7 +110,7 @@ ENV等指令.</code></pre><h3 id="Dockerfile指令"><a href="#Dockerfile指令" 
     </div>
     
         <div class='side'>
-            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Dockerfile的定义"><span class="toc-number">1.</span> <span class="toc-text">Dockerfile的定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dockerfile文件说明"><span class="toc-number">2.</span> <span class="toc-text">Dockerfile文件说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dockerfile指令"><span class="toc-number">3.</span> <span class="toc-text">Dockerfile指令</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Dockerfile的定义"><span class="toc-number">1.</span> <span class="toc-text">Dockerfile的定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dockerfile文件说明"><span class="toc-number">2.</span> <span class="toc-text">Dockerfile文件说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dockerfile指令"><span class="toc-number">3.</span> <span class="toc-text">Dockerfile指令</span></a></li></ol>
         </div>
     
 </div>

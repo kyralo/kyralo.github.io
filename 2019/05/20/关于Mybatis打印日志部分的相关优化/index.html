@@ -18,6 +18,7 @@ log4j.rootCate,">
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/kyralo/cdn/ico/favicon.ico"> 
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/kyralo/cdn@v1.0.5/css/diaspora.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/kevinzhao2233/typora-theme-pie/pie.css">
     <!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
     <script>
          (adsbygoogle = window.adsbygoogle || []).push({
@@ -62,8 +63,8 @@ log4j.rootCate,">
 
         </div>
         <div class="content markdown">
-            <h3 id="一-导入jar包"><a href="#一-导入jar包" class="headerlink" title="一.导入jar包"></a>一.导入jar包</h3><p>​    要打印日志必须要有log4j包.我这里用的是log4j-1.2.17.jar</p>
-<h3 id="二-写-log4j-properties"><a href="#二-写-log4j-properties" class="headerlink" title="二.写 log4j.properties"></a>二.写 log4j.properties</h3><p>我这里有一个大致的模板​</p>
+            <h2 id="一-导入jar包"><a href="#一-导入jar包" class="headerlink" title="一.导入jar包"></a>一.导入jar包</h2><p>​    要打印日志必须要有log4j包.我这里用的是log4j-1.2.17.jar</p>
+<h2 id="二-写-log4j-properties"><a href="#二-写-log4j-properties" class="headerlink" title="二.写 log4j.properties"></a>二.写 log4j.properties</h2><p>我这里有一个大致的模板​</p>
 <pre><code>log4j.rootCategory=ERROR,CONSOLE,LOGFILE
 #fatal（致命错误）&gt;error（错误）&gt;warn（警告）&gt;info（普通信息）&gt;debug（调试信息）
 
@@ -109,7 +110,7 @@ public class test2 {
 <p>主要看到log4j.appender.LOGFILE.File=src/Mybatis.log   </p>
 <p>这个地方设置输入日志的文本文件的存放位置，我这里设置的是在src目录下</p>
 <p>（如果该目录下没有文件名为Mybatis.log  的文件，那么当程序运行时会自动新建一个Mybatis.log  文件）</p>
-<h3 id="三-日志优化的作用"><a href="#三-日志优化的作用" class="headerlink" title="三.日志优化的作用"></a>三.日志优化的作用</h3><p>在说作用之前先看一下日志优化的效果</p>
+<h2 id="三-日志优化的作用"><a href="#三-日志优化的作用" class="headerlink" title="三.日志优化的作用"></a>三.日志优化的作用</h2><p>在说作用之前先看一下日志优化的效果</p>
 <p><img src="https://view.moezx.cc/images/2019/08/02/4-1.md.png" alt></p>
 <p>从效果图中我们可以很清楚的看到软件执行过程中的相关信息，并且过滤了很多不必要的信息</p>
 <p>这样我们在开发中可以很清楚的了解软件的运行状况，并且若出错也会非常容易找到错误</p>
@@ -130,7 +131,7 @@ public class test2 {
     </div>
     
         <div class='side'>
-            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一-导入jar包"><span class="toc-number">1.</span> <span class="toc-text">一.导入jar包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二-写-log4j-properties"><span class="toc-number">2.</span> <span class="toc-text">二.写 log4j.properties</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三-日志优化的作用"><span class="toc-number">3.</span> <span class="toc-text">三.日志优化的作用</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一-导入jar包"><span class="toc-number">1.</span> <span class="toc-text">一.导入jar包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二-写-log4j-properties"><span class="toc-number">2.</span> <span class="toc-text">二.写 log4j.properties</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三-日志优化的作用"><span class="toc-number">3.</span> <span class="toc-text">三.日志优化的作用</span></a></li></ol>
         </div>
     
 </div>

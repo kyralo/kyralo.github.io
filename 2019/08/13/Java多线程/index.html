@@ -18,6 +18,7 @@
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/kyralo/cdn/ico/favicon.ico"> 
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/kyralo/cdn@v1.0.5/css/diaspora.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/kevinzhao2233/typora-theme-pie/pie.css">
     <!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
     <script>
          (adsbygoogle = window.adsbygoogle || []).push({
@@ -62,18 +63,18 @@
 
         </div>
         <div class="content markdown">
-            <h3 id="1-并行与并发"><a href="#1-并行与并发" class="headerlink" title="1.并行与并发"></a>1.并行与并发</h3><h4 id="并行"><a href="#并行" class="headerlink" title="并行:"></a>并行:</h4><p>两个或者多个事件在同一时刻发生</p>
-<h4 id="并发"><a href="#并发" class="headerlink" title="并发:"></a>并发:</h4><p>两个或多个事件在同一时间间隔发生。</p>
-<h3 id="2-进程与线程的区别"><a href="#2-进程与线程的区别" class="headerlink" title="2.进程与线程的区别"></a>2.进程与线程的区别</h3><p>一个进程包含一个或多个线程(至少一个线程),<br>当进程所拥有的线程数为0时,进入销毁状态.</p>
+            <h2 id="1-并行与并发"><a href="#1-并行与并发" class="headerlink" title="1.并行与并发"></a>1.并行与并发</h2><h3 id="并行"><a href="#并行" class="headerlink" title="并行:"></a>并行:</h3><p>两个或者多个事件在同一时刻发生</p>
+<h3 id="并发"><a href="#并发" class="headerlink" title="并发:"></a>并发:</h3><p>两个或多个事件在同一时间间隔发生。</p>
+<h2 id="2-进程与线程的区别"><a href="#2-进程与线程的区别" class="headerlink" title="2.进程与线程的区别"></a>2.进程与线程的区别</h2><p>一个进程包含一个或多个线程(至少一个线程),<br>当进程所拥有的线程数为0时,进入销毁状态.</p>
 <p>进程间资源不共享,同一个进程下的多个线程间的可以实现资源共享.</p>
-<h3 id="3-线程的生命周期"><a href="#3-线程的生命周期" class="headerlink" title="3.线程的生命周期"></a>3.线程的生命周期</h3><h4 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期:"></a>生命周期:</h4><p>在程序开发中,将一个对象从被实例化完成,到这个对象使用结束,并销毁的过程.</p>
-<h4 id="线程的生命周期"><a href="#线程的生命周期" class="headerlink" title="线程的生命周期:"></a>线程的生命周期:</h4><p>一个线程被实例化完成,到这个线程被销毁的过程.</p>
-<h4 id="线程的状态"><a href="#线程的状态" class="headerlink" title="线程的状态"></a>线程的状态</h4><p>1.新生态: New<br>    一个线程对象被实例化完成,但是还没有做任何操作.</p>
+<h2 id="3-线程的生命周期"><a href="#3-线程的生命周期" class="headerlink" title="3.线程的生命周期"></a>3.线程的生命周期</h2><h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期:"></a>生命周期:</h3><p>在程序开发中,将一个对象从被实例化完成,到这个对象使用结束,并销毁的过程.</p>
+<h3 id="线程的生命周期"><a href="#线程的生命周期" class="headerlink" title="线程的生命周期:"></a>线程的生命周期:</h3><p>一个线程被实例化完成,到这个线程被销毁的过程.</p>
+<h3 id="线程的状态"><a href="#线程的状态" class="headerlink" title="线程的状态"></a>线程的状态</h3><p>1.新生态: New<br>    一个线程对象被实例化完成,但是还没有做任何操作.</p>
 <p>2.就绪态: Ready<br>    一个线程已经被开启,开始争抢CPU时间片.</p>
 <p>3.运行态: Run<br>    一个线程抢到了CPU时间片,开始执行这个线程中的逻辑.</p>
 <p>4.阻塞态: Interrupt<br>    一个线程在运行的过程中,受到某些操作的影响,放弃了已经获得的CPU时间片,并且不在参与CPU时间片的争取,此时线程处于挂起状态.</p>
 <p>5.死亡态: Dead<br>    线程对象被销毁.</p>
-<h4 id="线程的生命周期流程图"><a href="#线程的生命周期流程图" class="headerlink" title="线程的生命周期流程图"></a>线程的生命周期流程图</h4><p><img src="https://view.moezx.cc/images/2019/08/13/5a7f22744a9e00e4baee0b00267fb729.png" alt></p>
+<h3 id="线程的生命周期流程图"><a href="#线程的生命周期流程图" class="headerlink" title="线程的生命周期流程图"></a>线程的生命周期流程图</h3><p><img src="https://view.moezx.cc/images/2019/08/13/5a7f22744a9e00e4baee0b00267fb729.png" alt></p>
 
         </div>
         
@@ -91,7 +92,7 @@
     </div>
     
         <div class='side'>
-            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-并行与并发"><span class="toc-number">1.</span> <span class="toc-text">1.并行与并发</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#并行"><span class="toc-number">1.1.</span> <span class="toc-text">并行:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#并发"><span class="toc-number">1.2.</span> <span class="toc-text">并发:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-进程与线程的区别"><span class="toc-number">2.</span> <span class="toc-text">2.进程与线程的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-线程的生命周期"><span class="toc-number">3.</span> <span class="toc-text">3.线程的生命周期</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#生命周期"><span class="toc-number">3.1.</span> <span class="toc-text">生命周期:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#线程的生命周期"><span class="toc-number">3.2.</span> <span class="toc-text">线程的生命周期:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#线程的状态"><span class="toc-number">3.3.</span> <span class="toc-text">线程的状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#线程的生命周期流程图"><span class="toc-number">3.4.</span> <span class="toc-text">线程的生命周期流程图</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-并行与并发"><span class="toc-number">1.</span> <span class="toc-text">1.并行与并发</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#并行"><span class="toc-number">1.1.</span> <span class="toc-text">并行:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#并发"><span class="toc-number">1.2.</span> <span class="toc-text">并发:</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-进程与线程的区别"><span class="toc-number">2.</span> <span class="toc-text">2.进程与线程的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-线程的生命周期"><span class="toc-number">3.</span> <span class="toc-text">3.线程的生命周期</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#生命周期"><span class="toc-number">3.1.</span> <span class="toc-text">生命周期:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线程的生命周期"><span class="toc-number">3.2.</span> <span class="toc-text">线程的生命周期:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线程的状态"><span class="toc-number">3.3.</span> <span class="toc-text">线程的状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线程的生命周期流程图"><span class="toc-number">3.4.</span> <span class="toc-text">线程的生命周期流程图</span></a></li></ol></li></ol>
         </div>
     
 </div>

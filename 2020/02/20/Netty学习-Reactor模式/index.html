@@ -23,6 +23,7 @@
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/kyralo/cdn/ico/favicon.ico"> 
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/kyralo/cdn@v1.0.5/css/diaspora.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/kevinzhao2233/typora-theme-pie/pie.css">
     <!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
     <script>
          (adsbygoogle = window.adsbygoogle || []).push({
@@ -67,20 +68,20 @@
 
         </div>
         <div class="content markdown">
-            <h3 id="一-传统阻塞I-O服务模型"><a href="#一-传统阻塞I-O服务模型" class="headerlink" title="一. 传统阻塞I/O服务模型"></a>一. 传统阻塞I/O服务模型</h3><h4 id="工作原理图"><a href="#工作原理图" class="headerlink" title="工作原理图"></a>工作原理图</h4><p>
+            <h2 id="一-传统阻塞I-O服务模型"><a href="#一-传统阻塞I-O服务模型" class="headerlink" title="一. 传统阻塞I/O服务模型"></a>一. 传统阻塞I/O服务模型</h2><h3 id="工作原理图"><a href="#工作原理图" class="headerlink" title="工作原理图"></a>工作原理图</h3><p>
     先了解传统I/O的原理以及从传统I/O到Reactor模式的转变才能更深刻地理解Reactor模式.
 </p>
 
 <p><img src="https://cdn.kyralo.online/blog/IO.png" alt></p>
-<h4 id="模型特点"><a href="#模型特点" class="headerlink" title="模型特点"></a>模型特点</h4><ul>
+<h3 id="模型特点"><a href="#模型特点" class="headerlink" title="模型特点"></a>模型特点</h3><ul>
 <li>采用阻塞IO模式获取输入的数据</li>
 <li>每个连接都需要独立的线程完成数据的输入, 业务处理, 数据返回</li>
 </ul>
-<h4 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h4><ul>
+<h3 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h3><ul>
 <li>当并发数特别大时, 服务端会创建大量线程, 占用大量系统资源</li>
 <li>连接建立后, 若当前线程暂时没有数据可读, 该线程会阻塞在read操作, 造成线程资源浪费</li>
 </ul>
-<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>针对传统阻塞io服务模型的2个缺点有以下两种解决方案: </p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>针对传统阻塞io服务模型的2个缺点有以下两种解决方案: </p>
 
 <ol>
 <li><p>基于I/O复用模型：多个连接共用一个阻塞对象，应用程序只需要在一个阻塞对象等待，无需阻塞等待所有连接。当某个连接有新的数据可以处理时，操作系统通知应用程序，线程从阻塞状态返回，开始进行业务处理Reactor对应的叫法:1.反应器模式2.分发者模式(Dispatcher) 3.通知者模式(notifier)</p>
@@ -89,22 +90,22 @@
 </li>
 </ol>
 <p><span style="color: red">I/O复用结合线程池，就是Reactor模式基本设计思想<br></span></p>
-<h3 id="二-Reactor模式"><a href="#二-Reactor模式" class="headerlink" title="二. Reactor模式"></a>二. Reactor模式</h3><h4 id="Reactor模式基本说明"><a href="#Reactor模式基本说明" class="headerlink" title="Reactor模式基本说明"></a>Reactor模式基本说明</h4><ul>
+<h2 id="二-Reactor模式"><a href="#二-Reactor模式" class="headerlink" title="二. Reactor模式"></a>二. Reactor模式</h2><h3 id="Reactor模式基本说明"><a href="#Reactor模式基本说明" class="headerlink" title="Reactor模式基本说明"></a>Reactor模式基本说明</h3><ul>
 <li>Reactor模式，通过一个或多个输入同时传递给服务处理器的模式(基于事件驱动)</li>
 <li>服务器端程序处理传入的多个请求,并将它们同步分派到相应的处理线程， 因此Reactor模式也叫Dispatcher模式</li>
 <li>Reactor模式使用IO复用监听事件,收到事件后，分发给某个线程(进程),这点就是网络服务器高并发处理关键</li>
 </ul>
-<h4 id="Reactor模式核心组成"><a href="#Reactor模式核心组成" class="headerlink" title="Reactor模式核心组成"></a>Reactor模式核心组成</h4><ol>
+<h3 id="Reactor模式核心组成"><a href="#Reactor模式核心组成" class="headerlink" title="Reactor模式核心组成"></a>Reactor模式核心组成</h3><ol>
 <li>Reactor：Reactor在一个单独的线程中运行，负责监听和分发事件，分发给适当的处理程序来对IO事件做出反应。它就像公司的电话接线员，它接听来自客户的电话并将线路转移到适当的联系人；</li>
 <li>Handlers：处理程序执行I/O事件要完成的实际事件，类似于客户想要与之交谈的公司中的实际官员。Reactor通过调度适当的处理程序来响应I/O事件，处理程序执行非阻塞操作。</li>
 </ol>
-<h4 id="Reactor模式分类"><a href="#Reactor模式分类" class="headerlink" title="Reactor模式分类"></a>Reactor模式分类</h4><p>根据Reactor的数量和处理资源池线程的数量不同，有3种典型的实现</p>
+<h3 id="Reactor模式分类"><a href="#Reactor模式分类" class="headerlink" title="Reactor模式分类"></a>Reactor模式分类</h3><p>根据Reactor的数量和处理资源池线程的数量不同，有3种典型的实现</p>
 <ol>
 <li>单Reactor单线程</li>
 <li>单Reactor多线程</li>
 <li>主从Reactor多线程</li>
 </ol>
-<h4 id="单Reactor单线程"><a href="#单Reactor单线程" class="headerlink" title="单Reactor单线程"></a>单Reactor单线程</h4><p>原理图</p>
+<h3 id="单Reactor单线程"><a href="#单Reactor单线程" class="headerlink" title="单Reactor单线程"></a>单Reactor单线程</h3><p>原理图</p>
 
 <p><img src="https://cdn.kyralo.online/blog/Reactor%E5%8D%95%E7%BA%BF%E7%A8%8B.png" alt></p>
 <p>说明</p>
@@ -125,7 +126,7 @@
 <li>缺点：可靠性问题，线程意外终止，或者进入死循环，会导致整个系统通信模块不可用，不能接收和处理外部消息，造成节点故障</li>
 <li>使用场景：客户端的数量有限，业务处理非常快速,比如Redis在业务处理的时间复杂度O(1)的情况</li>
 </ol>
-<h4 id="单Reactor多线程"><a href="#单Reactor多线程" class="headerlink" title="单Reactor多线程"></a>单Reactor多线程</h4><p>原理图</p>
+<h3 id="单Reactor多线程"><a href="#单Reactor多线程" class="headerlink" title="单Reactor多线程"></a>单Reactor多线程</h3><p>原理图</p>
 
 <p><img src="https://cdn.kyralo.online/blog/%E5%8D%95Reactor%E5%A4%9A%E7%BA%BF%E7%A8%8B.jpg" alt></p>
 <ol>
@@ -143,7 +144,7 @@
 <li>优点：可以充分的利用多核cpu的处理能力</li>
 <li>缺点：多线程数据共享和访问比较复杂,reactor处理所有的事件的监听和响应,<br>在单线程运行,在高并发场景容易出现性能瓶颈.</li>
 </ol>
-<h4 id="主从Reactor多线程"><a href="#主从Reactor多线程" class="headerlink" title="主从Reactor多线程"></a>主从Reactor多线程</h4><p>工作原理图</p>
+<h3 id="主从Reactor多线程"><a href="#主从Reactor多线程" class="headerlink" title="主从Reactor多线程"></a>主从Reactor多线程</h3><p>工作原理图</p>
 <p>
     针对单Reactor多线程模型中，Reactor在单线程中运行，高并发场景下容易成为性能瓶颈，可以让Reactor在多线程中运行
 </p>
@@ -168,7 +169,7 @@
 <li>缺点：编程复杂度较高</li>
 <li>结合实例：这种模型在许多项目中广泛使用，包括Nginx主从Reactor多进程模型，Memcached主从多线程，Netty主从多线程模型的支持</li>
 </ol>
-<h4 id="Reactor模式小结"><a href="#Reactor模式小结" class="headerlink" title="Reactor模式小结"></a>Reactor模式小结</h4><ol>
+<h3 id="Reactor模式小结"><a href="#Reactor模式小结" class="headerlink" title="Reactor模式小结"></a>Reactor模式小结</h3><ol>
 <li>单Reactor单线程，前台接待员和服务员是同一个人，全程为顾客服</li>
 <li>单Reactor多线程，1个前台接待员，多个服务员，接待员只负责接待</li>
 <li>主从Reactor多线程，多个前台接待员，多个服务生</li>
@@ -199,7 +200,7 @@
     </div>
     
         <div class='side'>
-            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一-传统阻塞I-O服务模型"><span class="toc-number">1.</span> <span class="toc-text">一. 传统阻塞I/O服务模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#工作原理图"><span class="toc-number">1.1.</span> <span class="toc-text">工作原理图</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#模型特点"><span class="toc-number">1.2.</span> <span class="toc-text">模型特点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#问题分析"><span class="toc-number">1.3.</span> <span class="toc-text">问题分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解决方案"><span class="toc-number">1.4.</span> <span class="toc-text">解决方案</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二-Reactor模式"><span class="toc-number">2.</span> <span class="toc-text">二. Reactor模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Reactor模式基本说明"><span class="toc-number">2.1.</span> <span class="toc-text">Reactor模式基本说明</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Reactor模式核心组成"><span class="toc-number">2.2.</span> <span class="toc-text">Reactor模式核心组成</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Reactor模式分类"><span class="toc-number">2.3.</span> <span class="toc-text">Reactor模式分类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#单Reactor单线程"><span class="toc-number">2.4.</span> <span class="toc-text">单Reactor单线程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#单Reactor多线程"><span class="toc-number">2.5.</span> <span class="toc-text">单Reactor多线程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#主从Reactor多线程"><span class="toc-number">2.6.</span> <span class="toc-text">主从Reactor多线程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Reactor模式小结"><span class="toc-number">2.7.</span> <span class="toc-text">Reactor模式小结</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一-传统阻塞I-O服务模型"><span class="toc-number">1.</span> <span class="toc-text">一. 传统阻塞I/O服务模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#工作原理图"><span class="toc-number">1.1.</span> <span class="toc-text">工作原理图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模型特点"><span class="toc-number">1.2.</span> <span class="toc-text">模型特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题分析"><span class="toc-number">1.3.</span> <span class="toc-text">问题分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解决方案"><span class="toc-number">1.4.</span> <span class="toc-text">解决方案</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二-Reactor模式"><span class="toc-number">2.</span> <span class="toc-text">二. Reactor模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Reactor模式基本说明"><span class="toc-number">2.1.</span> <span class="toc-text">Reactor模式基本说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Reactor模式核心组成"><span class="toc-number">2.2.</span> <span class="toc-text">Reactor模式核心组成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Reactor模式分类"><span class="toc-number">2.3.</span> <span class="toc-text">Reactor模式分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#单Reactor单线程"><span class="toc-number">2.4.</span> <span class="toc-text">单Reactor单线程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#单Reactor多线程"><span class="toc-number">2.5.</span> <span class="toc-text">单Reactor多线程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#主从Reactor多线程"><span class="toc-number">2.6.</span> <span class="toc-text">主从Reactor多线程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Reactor模式小结"><span class="toc-number">2.7.</span> <span class="toc-text">Reactor模式小结</span></a></li></ol></li></ol>
         </div>
     
 </div>

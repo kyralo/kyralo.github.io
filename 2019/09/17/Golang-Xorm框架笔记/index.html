@@ -17,6 +17,7 @@
     <link rel="icon" href="https://cdn.jsdelivr.net/gh/kyralo/cdn/ico/favicon.ico"> 
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/kyralo/cdn@v1.0.5/css/diaspora.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/kevinzhao2233/typora-theme-pie/pie.css">
     <!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
     <script>
          (adsbygoogle = window.adsbygoogle || []).push({
@@ -61,12 +62,12 @@
 
         </div>
         <div class="content markdown">
-            <h3 id="一、创建engine"><a href="#一、创建engine" class="headerlink" title="一、创建engine"></a>一、创建engine</h3><pre><code>engine, err := xorm.NewEngine(driverName, dataSourceName)
-上述代码创建了一个数据库引擎，可以在一个程序中创建多个engine。</code></pre><h3 id="二、查询方法："><a href="#二、查询方法：" class="headerlink" title="二、查询方法："></a>二、查询方法：</h3><h4 id="2-1、支持sql查询："><a href="#2-1、支持sql查询：" class="headerlink" title="2.1、支持sql查询："></a>2.1、支持sql查询：</h4><pre><code>1、查询一个string类型的sql，返回[]map[string][]byte类型的切片（查询）
+            <h2 id="一、创建engine"><a href="#一、创建engine" class="headerlink" title="一、创建engine"></a>一、创建engine</h2><pre><code>engine, err := xorm.NewEngine(driverName, dataSourceName)
+上述代码创建了一个数据库引擎，可以在一个程序中创建多个engine。</code></pre><h2 id="二、查询方法："><a href="#二、查询方法：" class="headerlink" title="二、查询方法："></a>二、查询方法：</h2><h3 id="2-1、支持sql查询："><a href="#2-1、支持sql查询：" class="headerlink" title="2.1、支持sql查询："></a>2.1、支持sql查询：</h3><pre><code>1、查询一个string类型的sql，返回[]map[string][]byte类型的切片（查询）
 results, err := engine.Query(&quot;select * from user&quot;)
 
 2、执行一个string的sql，返回结果影响行数（增删改）
-affected, err := engine.Exec(&quot;update user set .... where ...&quot;)</code></pre><h4 id="2-2、ORM方法："><a href="#2-2、ORM方法：" class="headerlink" title="2.2、ORM方法："></a>2.2、ORM方法：</h4><h3 id="主要有七个方法和其他辅助的方法来操作数据库。"><a href="#主要有七个方法和其他辅助的方法来操作数据库。" class="headerlink" title="主要有七个方法和其他辅助的方法来操作数据库。"></a>主要有七个方法和其他辅助的方法来操作数据库。</h3><p>　　1、插入一个或者多个数据：</p>
+affected, err := engine.Exec(&quot;update user set .... where ...&quot;)</code></pre><h3 id="2-2、ORM方法："><a href="#2-2、ORM方法：" class="headerlink" title="2.2、ORM方法："></a>2.2、ORM方法：</h3><h2 id="主要有七个方法和其他辅助的方法来操作数据库。"><a href="#主要有七个方法和其他辅助的方法来操作数据库。" class="headerlink" title="主要有七个方法和其他辅助的方法来操作数据库。"></a>主要有七个方法和其他辅助的方法来操作数据库。</h2><p>　　1、插入一个或者多个数据：</p>
 <pre><code>affected, err := engine.Insert(&amp;struct)
 // INSERT INTO struct () values ()
 affected, err := engine.Insert(&amp;struct1, &amp;struct2)
@@ -100,7 +101,7 @@ for raws.Next() {
 affected, err := engine.Where(...).Delete(&amp;user)
 // DELETE FROM user Where ...</code></pre><p>　　7、查询记录条数:</p>
 <pre><code>counts, err := engine.Count(&amp;user)
-// SELECT count(*) AS total FROM user</code></pre><h4 id="2-3：条件："><a href="#2-3：条件：" class="headerlink" title="2.3：条件："></a>2.3：条件：</h4><p>　　1、Id、In：</p>
+// SELECT count(*) AS total FROM user</code></pre><h3 id="2-3：条件："><a href="#2-3：条件：" class="headerlink" title="2.3：条件："></a>2.3：条件：</h3><p>　　1、Id、In：</p>
 <pre><code>engine.Id(1).Get(&amp;user) // for single primary key
 // SELECT * FROM user WHERE id = 1
 engine.Id(core.PK{1, 2}).Get(&amp;user) // for composite primary keys
@@ -151,7 +152,7 @@ engine.Join(&quot;LEFT&quot;, &quot;userdetail&quot;, &quot;user.id=userdetail.i
     </div>
     
         <div class='side'>
-            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、创建engine"><span class="toc-number">1.</span> <span class="toc-text">一、创建engine</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、查询方法："><span class="toc-number">2.</span> <span class="toc-text">二、查询方法：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1、支持sql查询："><span class="toc-number">2.1.</span> <span class="toc-text">2.1、支持sql查询：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2、ORM方法："><span class="toc-number">2.2.</span> <span class="toc-text">2.2、ORM方法：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#主要有七个方法和其他辅助的方法来操作数据库。"><span class="toc-number">3.</span> <span class="toc-text">主要有七个方法和其他辅助的方法来操作数据库。</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3：条件："><span class="toc-number">3.1.</span> <span class="toc-text">2.3：条件：</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、创建engine"><span class="toc-number">1.</span> <span class="toc-text">一、创建engine</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、查询方法："><span class="toc-number">2.</span> <span class="toc-text">二、查询方法：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1、支持sql查询："><span class="toc-number">2.1.</span> <span class="toc-text">2.1、支持sql查询：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2、ORM方法："><span class="toc-number">2.2.</span> <span class="toc-text">2.2、ORM方法：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主要有七个方法和其他辅助的方法来操作数据库。"><span class="toc-number">3.</span> <span class="toc-text">主要有七个方法和其他辅助的方法来操作数据库。</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3：条件："><span class="toc-number">3.1.</span> <span class="toc-text">2.3：条件：</span></a></li></ol></li></ol>
         </div>
     
 </div>
